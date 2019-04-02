@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": "../",
+    "outDir": "../dist",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "lib": ["es5", "es2015", "es2017", "dom", "scripthost"]
+  },
+  "include": ["../server/**/*", "../server/globals.d.ts"]
+}
