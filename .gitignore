@@ -1,0 +1,9 @@
+/node_modules
+
+/static/excel
+
+/static/image
+
+/static/upload
+
+/debug.log
