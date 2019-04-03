@@ -1,41 +1,41 @@
 import * as React from "react";
-import http from "../../http";
-import { Toast } from "antd-mobile";
+import { http } from "../../http";
+import { InputItem, Toast, Button, Modal } from "antd-mobile";
 import ColorBall from "../../components/ColorBall";
+import copy from "copy-to-clipboard";
 
 export interface AdminState {
-  readonly dataSource: object[];
-  readonly nickName: string;
-  readonly leaveAccount: number;
-  readonly hasPassword: boolean;
+  dataSource: object[];
+  nickName: string;
+  leaveAccount: number;
+  hasPassword: boolean;
   hasError: boolean;
-  number: number;
+  amount: number;
   isImgLoad: boolean;
   showModal: boolean;
   disable: boolean;
   isCopy: boolean;
-  colorBall: any;
+  colorBall: colorBall | undefined;
   password: string;
+  banner: string;
 }
 
 export default class Front extends React.Component<object, AdminState> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      dataSource: [],
-      nickName: "",
-      leaveAccount: 0,
-      hasPassword: false,
-      hasError: false,
-      number: 0,
-      isImgLoad: false,
-      showModal: false,
-      disable: false,
-      isCopy: false,
-      colorBall: undefined,
-      password: ""
-    };
-  }
+  public readonly state = {
+    dataSource: [],
+    nickName: "",
+    leaveAccount: 0,
+    hasPassword: false,
+    hasError: false,
+    amount: 0,
+    isImgLoad: false,
+    showModal: false,
+    disable: false,
+    isCopy: false,
+    colorBall: undefined,
+    password: "",
+    banner: ""
+  };
 
   public componentDidMount() {
     Toast.loading("稍等哦", 0);
@@ -52,22 +52,22 @@ export default class Front extends React.Component<object, AdminState> {
     if (navigator.userAgent.toLocaleLowerCase().includes("iphone")) {
       // @ts-ignore
       this.intervalFlag = setInterval(() => {
-        document.querySelector("body").scrollTop = 0;
+        (document.querySelector("body") as HTMLBodyElement).scrollTop = 0;
       }, 200);
     }
   };
 
   public submit = () => {
     // tslint:disable-next-line:variable-name
-    const { nickName, number, leaveAccount, password } = this.state;
+    const { nickName, amount, leaveAccount, password } = this.state;
 
-    if (number > leaveAccount) {
+    if (amount > leaveAccount) {
       Toast.info("超过当前剩余量了哦");
       this.setState({ hasError: true });
       return;
     }
-    if (nickName && number) {
-      this.fetchAccount(nickName, number, password);
+    if (nickName && amount) {
+      this.fetchAccount(nickName, amount, password);
     } else {
       Toast.info("信息填完哦");
     }
@@ -78,10 +78,18 @@ export default class Front extends React.Component<object, AdminState> {
       .get("/getStat")
       .then(
         (res: {
-          data: { data: { leaveAccountNumber: any; hasPassword: any } };
+          data: {
+            data: {
+              leaveAccountNumber: any;
+              hasPassword: any;
+            };
+          };
         }) => {
           const { leaveAccountNumber, hasPassword } = res.data.data;
-          this.setState({ leaveAccount: leaveAccountNumber, hasPassword });
+          this.setState({
+            leaveAccount: leaveAccountNumber,
+            hasPassword
+          });
           if (this.state.isImgLoad) {
             Toast.hide();
           }
@@ -105,10 +113,18 @@ export default class Front extends React.Component<object, AdminState> {
       });
   };
 
-  public fetchAccount = (nickName, number, password) => {
+  public fetchAccount = (
+    nickName: AdminState["nickName"],
+    amount: AdminState["amount"],
+    password: AdminState["password"]
+  ) => {
     Toast.loading("稍等哦", 0);
     http
-      .post("/getData", { nickName, number, password })
+      .post("/getData", {
+        nickName,
+        amount,
+        password
+      })
       .then(res => {
         if (res.data.code === 1) {
           Toast.hide();
@@ -119,7 +135,7 @@ export default class Front extends React.Component<object, AdminState> {
         this.setState({
           dataSource: res.data.data,
           showModal: true,
-          disabled: true
+          disable: true
         });
       })
       .catch(err => {
@@ -128,18 +144,14 @@ export default class Front extends React.Component<object, AdminState> {
       });
   };
 
-  public onIdChange = value => {
+  public onIdChange = (value: AdminState["nickName"]) => {
     this.setState({ nickName: value });
   };
 
-  public onNumberChange = value => {
+  public onAmountChange = (value: string) => {
     const { leaveAccount } = this.state;
-    const inputValue = Number(value.replace(/\s/g, ""));
-    if (!/\d+/gi.test(inputValue)) {
-      Toast.info(
-        leaveAccount <= 100 ? `输入1-${leaveAccount}的整数` : "输入1-100的整数"
-      );
-    } else if (inputValue <= (leaveAccount <= 100 ? leaveAccount : 100)) {
+
+    if (Number(value) <= (leaveAccount <= 100 ? leaveAccount : 100)) {
       this.setState({
         hasError: false
       });
@@ -153,11 +165,11 @@ export default class Front extends React.Component<object, AdminState> {
     }
 
     this.setState({
-      number: value
+      amount: Number(value)
     });
   };
 
-  public onPasswordChange = value => {
+  public onPasswordChange = (value: AdminState["password"]) => {
     this.setState({ password: value });
   };
 
@@ -166,22 +178,157 @@ export default class Front extends React.Component<object, AdminState> {
     Toast.hide();
   };
 
-  public onWrapTouchStart = e => {
+  public onWrapTouchStart = (e: any) => {
     // fix touch to scroll background page on iOS
     if (!/iPhone|iPod|iPad/i.test(navigator.userAgent)) {
       return;
     }
-    const pNode = closest(e.target, ".am-modal-content");
+    const pNode = this.closest(e.target, ".am-modal-content");
     if (!pNode) {
       e.preventDefault();
     }
   };
 
-  public handleTouchStart = e => {
+  public handleTouchStart = (e: any) => {
     this.state.colorBall.fly(e.touches[0].pageX, e.touches[0].pageY);
   };
 
+  public closeModal = () => {
+    this.setState({ showModal: false });
+  };
+
   public render() {
-    return <div>front</div>;
+    const {
+      nickName,
+      amount,
+      leaveAccount,
+      dataSource,
+      password,
+      hasPassword,
+      isImgLoad,
+      showModal,
+      disable,
+      isCopy,
+      banner
+    } = this.state;
+    return (
+      <div>
+        <div className="App" style={{ opacity: isImgLoad ? 1 : 0 }}>
+          <img
+            src={
+              process.env.NODE_ENV === "development"
+                ? `http://localhost:8080/${banner}`
+                : `${window.location.origin}/${banner}`
+            }
+            alt="banner"
+            width="100%"
+            height="auto"
+            onLoad={this.imgLoad}
+          />
+          <div className="input-wrapper">
+            <InputItem
+              placeholder="输入你的微博ID"
+              onChange={this.onIdChange}
+              value={nickName}
+            >
+              id
+            </InputItem>
+            <InputItem
+              type="digit"
+              placeholder={
+                leaveAccount <= 100
+                  ? `输入领取数量，库存${leaveAccount}个`
+                  : "输入领取数量，最多领100个哦"
+              }
+              error={this.state.hasError}
+              onChange={this.onAmountChange}
+              value={String(amount)}
+            >
+              数量
+            </InputItem>
+            {hasPassword ? (
+              <InputItem
+                type="password"
+                placeholder="输入口令"
+                onChange={this.onPasswordChange}
+                value={password}
+              >
+                口令
+              </InputItem>
+            ) : (
+              ""
+            )}
+          </div>
+          <div className="list-wrapper" onTouchStart={this.handleTouchStart}>
+            <div className="tip-wrapper" ref={ref => (this.tip = ref)}>
+              <span style={{ fontFamily: "arial" }}>&reg;</span>
+              <span>粉色系爱農超话站</span>
+            </div>
+          </div>
+
+          <Button
+            type={"primary"}
+            style={{
+              backgroundColor: "rgb(252, 177, 247)"
+            }}
+            disabled={disable}
+            onClick={this.submit}
+          >
+            {disable ? "领取成功，糖糖辛苦了：）" : "领取"}
+          </Button>
+
+          <Modal
+            visible={showModal}
+            transparent={true}
+            maskClosable={false}
+            onClose={this.closeModal}
+            footer={[
+              {
+                text: isCopy ? "去粘贴到记事本吧：)" : "点击复制",
+                onPress: () => {
+                  copy(
+                    dataSource.map(v => v.data.replace(/^,/gi, "")).join("\n")
+                  );
+                  this.setState({ isCopy: true });
+                  setTimeout(() => {
+                    this.setState({
+                      showModal: false
+                    });
+                  }, 3000);
+                }
+              }
+            ]}
+            wrapProps={{
+              onTouchStart: this.onWrapTouchStart
+            }}
+          >
+            <div
+              style={{
+                height: 100,
+                overflow: "scroll"
+              }}
+            >
+              {dataSource.map((v, index) => (
+                <p key={index} style={{ textAlign: "center" }}>
+                  {v.data.replace(/^,/gi, "")}
+                </p>
+              ))}
+            </div>
+          </Modal>
+        </div>
+      </div>
+    );
   }
+
+  private closest = (el: HTMLElement, selector: string) => {
+    const matchesSelector = el.matches || el.webkitMatchesSelector;
+
+    while (el) {
+      if (matchesSelector.call(el, selector)) {
+        return el;
+      }
+      el = el.parentElement as HTMLElement;
+    }
+    return null;
+  };
 }
