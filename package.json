@@ -5,6 +5,7 @@
   "dependencies": {
     "@types/axios": "^0.14.0",
     "@types/bluebird": "^3.5.26",
+    "@types/echarts": "^4.1.8",
     "@types/react-loadable": "^5.5.1",
     "@types/react-router-dom": "^4.3.1",
     "antd": "^3.16.1",
@@ -23,6 +24,8 @@
     "css-loader": "0.28.7",
     "dotenv": "4.0.0",
     "dotenv-expand": "4.2.0",
+    "echarts": "^4.2.1",
+    "echarts-for-react": "^2.0.15-beta.0",
     "ejsexcel": "^3.5.3",
     "errorhandler": "^1.5.0",
     "express-session": "^1.15.6",
@@ -33,6 +36,8 @@
     "fs-extra": "3.0.1",
     "html-webpack-plugin": "2.29.0",
     "jest": "20.0.4",
+    "less": "^3.9.0",
+    "less-loader": "^4.1.0",
     "lusca": "^1.6.1",
     "mongoose": "^5.4.20",
     "multer": "^1.4.1",
@@ -69,6 +74,10 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "server": "cross-env NODE_ENV=development nodemon dist/server.js"
+  },
+  "theme": {
+    "brand-primary": "rgb(252,177,247)",
+    "toast-fill": "rgba(252,177,247,0.8)"
   },
   "devDependencies": {
     "@types/jest": "^24.0.11",

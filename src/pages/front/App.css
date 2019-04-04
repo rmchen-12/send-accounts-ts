@@ -1,0 +1,52 @@
+p {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  /* Disables pull-to-refresh but allows overscroll glow effects. */
+  overscroll-behavior-y: contain;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  transition: all 0.3s ease;
+}
+
+.App > img {
+  width: 100%;
+  height: auto;
+}
+
+.list-wrapper {
+  position: relative;
+  flex: 1;
+  margin: 0 10px;
+  overflow: auto;
+}
+
+.tip-wrapper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  color: rgb(252, 177, 247);
+}
+
+.tip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 10vw;
+  text-align: center;
+}
+
+.tip > span {
+  font-size: 4vw;
+  color: gray;
+  white-space: nowrap;
+}

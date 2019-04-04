@@ -10,7 +10,7 @@ export const getData = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { nickName, getNumber, password } = req.body;
+  const { nickName, amount, password } = req.body;
   try {
     const passwords = await Password.find();
 
@@ -20,31 +20,30 @@ export const getData = async (
       return;
     }
 
-    let index: number;
-    const oldSendAccount = await Accounts.find({ hasSend: true });
-    if (oldSendAccount.length === 0) {
-      index = 0;
-    } else {
-      oldSendAccount.sort((pre, current) => current.id - pre.id);
-      index = oldSendAccount[0].id;
-    }
+    // 更新amount条数据并返回
+    const noSendAccount = await Accounts.find({ hasSend: false })
+      .sort({
+        id: 1
+      })
+      .limit(amount);
 
-    await Accounts.updateMany(
-      {
-        hasSend: false,
-        id: { $gt: index, $lte: index + Number(getNumber) }
-      },
-      {
-        getTime: moment().format("YYYY-MM-DD"),
-        hasSend: true,
-        nickName
-      }
-    );
+    noSendAccount.forEach(async doc => {
+      await Accounts.updateOne(
+        {
+          _id: doc._id
+        },
+        {
+          $set: {
+            getTime: moment().format("YYYY-MM-DD"),
+            hasSend: true,
+            nickName
+          }
+        }
+      );
+    });
 
-    const newSendAccount = await Accounts.find({ hasSend: true });
-    newSendAccount.sort((pre, current) => pre.id - current.id);
-    logger.info(`user:${nickName}  number:${getNumber}`);
-    responseClient(res, 200, 0, "更新成功", newSendAccount.slice(index));
+    logger.info(`user:${nickName}  number:${amount}`);
+    responseClient(res, 200, 0, "更新成功", noSendAccount);
   } catch (error) {
     responseClient(res);
     if (error) {

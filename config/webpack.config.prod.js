@@ -15,6 +15,7 @@ const getClientEnvironment = require("./env");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const tsImportPluginFactory = require("ts-import-plugin");
+const theme = require("../package.json").theme;
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -238,6 +239,18 @@ module.exports = {
               )
             )
             // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
+          },
+          {
+            test: /\.less$/,
+            use: [
+              "style-loader",
+              "css-loader",
+              {
+                loader: "less-loader",
+                options: { modifyVars: theme, javascriptEnabled: true }
+              }
+            ],
+            include: /node_modules/
           },
           // "file" loader makes sure assets end up in the `build` folder.
           // When you `import` an asset, you get its filename.

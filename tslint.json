@@ -13,6 +13,7 @@
     "no-shadowed-variable": false,
     "interface-name": false,
     // "member-access": [true, "no-public"],
-    "ordered-imports": false
+    "ordered-imports": false,
+    "no-console": [true, "warning"]
   }
 }

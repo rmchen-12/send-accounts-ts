@@ -1,21 +1,26 @@
 import * as React from "react";
 import { http } from "../../http";
 import { InputItem, Toast, Button, Modal } from "antd-mobile";
-import ColorBall from "../../components/ColorBall";
+// import ColorBall from "../../components/ColorBall";
 import copy from "copy-to-clipboard";
+import "./App.css";
+
+interface Data {
+  data: string;
+}
 
 export interface AdminState {
-  dataSource: object[];
+  dataSource: Data[];
   nickName: string;
   leaveAccount: number;
   hasPassword: boolean;
   hasError: boolean;
-  amount: number;
+  amount: number | undefined;
   isImgLoad: boolean;
   showModal: boolean;
   disable: boolean;
   isCopy: boolean;
-  colorBall: colorBall | undefined;
+  // colorBall: colorBall | undefined;
   password: string;
   banner: string;
 }
@@ -27,25 +32,27 @@ export default class Front extends React.Component<object, AdminState> {
     leaveAccount: 0,
     hasPassword: false,
     hasError: false,
-    amount: 0,
+    amount: undefined,
     isImgLoad: false,
     showModal: false,
     disable: false,
     isCopy: false,
-    colorBall: undefined,
+    // colorBall: undefined,
     password: "",
     banner: ""
   };
+
+  private tip: React.RefObject<HTMLDivElement> = React.createRef();
 
   public componentDidMount() {
     Toast.loading("稍等哦", 0);
     this.getStat();
     this.handleIosBug();
     this.getBanner();
-    const colorBall = new ColorBall({
-      colors: ["#fdc0c8", "#fcedaa", "#90dfdc", "#eae0d5"]
-    });
-    this.setState({ colorBall });
+    // const colorBall = new ColorBall({
+    //   colors: ["#fdc0c8", "#fcedaa", "#90dfdc", "#eae0d5"]
+    // });
+    // this.setState({ colorBall });
   }
 
   public handleIosBug = () => {
@@ -58,18 +65,27 @@ export default class Front extends React.Component<object, AdminState> {
   };
 
   public submit = () => {
-    // tslint:disable-next-line:variable-name
-    const { nickName, amount, leaveAccount, password } = this.state;
+    const {
+      nickName,
+      amount,
+      leaveAccount,
+      password,
+      hasPassword
+    } = this.state;
 
-    if (amount > leaveAccount) {
+    if (Number(amount) > leaveAccount) {
       Toast.info("超过当前剩余量了哦");
       this.setState({ hasError: true });
       return;
     }
-    if (nickName && amount) {
-      this.fetchAccount(nickName, amount, password);
+    if (hasPassword) {
+      nickName && amount && password
+        ? this.fetchAccount(nickName, amount, password)
+        : Toast.info("信息填完哦");
     } else {
-      Toast.info("信息填完哦");
+      nickName && amount
+        ? this.fetchAccount(nickName, amount)
+        : Toast.info("信息填完哦");
     }
   };
 
@@ -116,7 +132,7 @@ export default class Front extends React.Component<object, AdminState> {
   public fetchAccount = (
     nickName: AdminState["nickName"],
     amount: AdminState["amount"],
-    password: AdminState["password"]
+    password?: AdminState["password"]
   ) => {
     Toast.loading("稍等哦", 0);
     http
@@ -190,7 +206,7 @@ export default class Front extends React.Component<object, AdminState> {
   };
 
   public handleTouchStart = (e: any) => {
-    this.state.colorBall.fly(e.touches[0].pageX, e.touches[0].pageY);
+    // this.state.colorBall.fly(e.touches[0].pageX, e.touches[0].pageY);
   };
 
   public closeModal = () => {
@@ -242,7 +258,7 @@ export default class Front extends React.Component<object, AdminState> {
               }
               error={this.state.hasError}
               onChange={this.onAmountChange}
-              value={String(amount)}
+              value={amount === 0 ? undefined : String(amount)}
             >
               数量
             </InputItem>
@@ -260,7 +276,7 @@ export default class Front extends React.Component<object, AdminState> {
             )}
           </div>
           <div className="list-wrapper" onTouchStart={this.handleTouchStart}>
-            <div className="tip-wrapper" ref={ref => (this.tip = ref)}>
+            <div className="tip-wrapper" ref={this.tip}>
               <span style={{ fontFamily: "arial" }}>&reg;</span>
               <span>粉色系爱農超话站</span>
             </div>
@@ -287,7 +303,9 @@ export default class Front extends React.Component<object, AdminState> {
                 text: isCopy ? "去粘贴到记事本吧：)" : "点击复制",
                 onPress: () => {
                   copy(
-                    dataSource.map(v => v.data.replace(/^,/gi, "")).join("\n")
+                    dataSource
+                      .map((v: Data) => v.data.replace(/^,/gi, ""))
+                      .join("\n")
                   );
                   this.setState({ isCopy: true });
                   setTimeout(() => {
@@ -308,7 +326,7 @@ export default class Front extends React.Component<object, AdminState> {
                 overflow: "scroll"
               }}
             >
-              {dataSource.map((v, index) => (
+              {dataSource.map((v: Data, index) => (
                 <p key={index} style={{ textAlign: "center" }}>
                   {v.data.replace(/^,/gi, "")}
                 </p>

@@ -17,7 +17,7 @@ const password_1 = require("../models/password");
 const utils_1 = require("../utils");
 const logger_1 = __importDefault(require("../utils/logger"));
 exports.getData = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-    const { nickName, getNumber, password } = req.body;
+    const { nickName, amount, password } = req.body;
     try {
         const passwords = yield password_1.Password.find();
         // 校验密码
@@ -25,27 +25,25 @@ exports.getData = (req, res, next) => __awaiter(this, void 0, void 0, function* 
             utils_1.responseClient(res, 200, 1, "口令有误哦");
             return;
         }
-        let index;
-        const oldSendAccount = yield accounts_1.Accounts.find({ hasSend: true });
-        if (oldSendAccount.length === 0) {
-            index = 0;
-        }
-        else {
-            oldSendAccount.sort((pre, current) => current.id - pre.id);
-            index = oldSendAccount[0].id;
-        }
-        yield accounts_1.Accounts.updateMany({
-            hasSend: false,
-            id: { $gt: index, $lte: index + Number(getNumber) }
-        }, {
-            getTime: moment_1.default().format("YYYY-MM-DD"),
-            hasSend: true,
-            nickName
-        });
-        const newSendAccount = yield accounts_1.Accounts.find({ hasSend: true });
-        newSendAccount.sort((pre, current) => pre.id - current.id);
-        logger_1.default.info(`user:${nickName}  number:${getNumber}`);
-        utils_1.responseClient(res, 200, 0, "更新成功", newSendAccount.slice(index));
+        // 更新amount条数据并返回
+        const noSendAccount = yield accounts_1.Accounts.find({ hasSend: false })
+            .sort({
+            id: 1
+        })
+            .limit(amount);
+        noSendAccount.forEach((doc) => __awaiter(this, void 0, void 0, function* () {
+            yield accounts_1.Accounts.updateOne({
+                _id: doc._id
+            }, {
+                $set: {
+                    getTime: moment_1.default().format("YYYY-MM-DD"),
+                    hasSend: true,
+                    nickName
+                }
+            });
+        }));
+        logger_1.default.info(`user:${nickName}  number:${amount}`);
+        utils_1.responseClient(res, 200, 0, "更新成功", noSendAccount);
     }
     catch (error) {
         utils_1.responseClient(res);
