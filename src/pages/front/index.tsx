@@ -1,7 +1,7 @@
 import * as React from "react";
 import { http } from "../../http";
 import { InputItem, Toast, Button, Modal } from "antd-mobile";
-// import ColorBall from "../../components/ColorBall";
+import ColorBall from "../../components/ColorBall";
 import copy from "copy-to-clipboard";
 import "./App.css";
 
@@ -20,7 +20,7 @@ export interface AdminState {
   showModal: boolean;
   disable: boolean;
   isCopy: boolean;
-  // colorBall: colorBall | undefined;
+  colorBall: ColorBall;
   password: string;
   banner: string;
 }
@@ -37,7 +37,9 @@ export default class Front extends React.Component<object, AdminState> {
     showModal: false,
     disable: false,
     isCopy: false,
-    // colorBall: undefined,
+    colorBall: new ColorBall({
+      colors: ["#fdc0c8", "#fcedaa", "#90dfdc", "#eae0d5"]
+    }),
     password: "",
     banner: ""
   };
@@ -49,10 +51,6 @@ export default class Front extends React.Component<object, AdminState> {
     this.getStat();
     this.handleIosBug();
     this.getBanner();
-    // const colorBall = new ColorBall({
-    //   colors: ["#fdc0c8", "#fcedaa", "#90dfdc", "#eae0d5"]
-    // });
-    // this.setState({ colorBall });
   }
 
   public handleIosBug = () => {
@@ -206,7 +204,7 @@ export default class Front extends React.Component<object, AdminState> {
   };
 
   public handleTouchStart = (e: any) => {
-    // this.state.colorBall.fly(e.touches[0].pageX, e.touches[0].pageY);
+    this.state.colorBall.fly(e.touches[0].pageX, e.touches[0].pageY);
   };
 
   public closeModal = () => {

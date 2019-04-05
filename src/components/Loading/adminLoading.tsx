@@ -1,5 +1,6 @@
 import * as React from "react";
 import { LoadingComponentProps } from "react-loadable";
+import { Spin } from "antd";
 
 export interface AdminLoadingState {
   loading: boolean;
@@ -25,6 +26,15 @@ export default class AdminLoading extends React.Component<
   }
 
   public render() {
-    return <div>admin</div>;
+    return (
+      <Spin
+        spinning={this.state.loading}
+        style={{ marginTop: 250 }}
+        size="large"
+        tip="loading..."
+      >
+        <div style={{ width: "100vw", height: "100vh" }} />
+      </Spin>
+    );
   }
 }

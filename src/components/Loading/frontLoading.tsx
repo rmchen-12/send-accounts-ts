@@ -13,6 +13,6 @@ export default class FrontLoading extends React.Component<
     Toast.hide();
   }
   public render() {
-    return <div>front</div>;
+    return <div style={{ width: "100vw", height: "100vh" }} />;
   }
 }
