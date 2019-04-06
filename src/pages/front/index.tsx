@@ -5,7 +5,7 @@ import copy from "copy-to-clipboard";
 import "./App.css";
 
 import ColorBall from "../../components/ColorBall";
-import FlyPig from "../../components/FlyPig";
+// import FlyPig from "../../components/FlyPig";
 
 interface Data {
   data: string;
@@ -230,7 +230,6 @@ export default class Front extends React.Component<object, AdminState> {
     return (
       <div>
         <div className="App" style={{ opacity: isImgLoad ? 1 : 0 }}>
-          <FlyPig />
           <img
             src={
               process.env.NODE_ENV === "development"
