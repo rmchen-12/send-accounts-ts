@@ -137,6 +137,7 @@ export default class Front extends React.Component<object, AdminState> {
     password?: AdminState["password"]
   ) => {
     Toast.loading("稍等哦", 0);
+    this.setState({ goPig: true });
     http
       .post("/getData", {
         nickName,
@@ -209,7 +210,6 @@ export default class Front extends React.Component<object, AdminState> {
 
   public handleTouchStart = (e: any) => {
     this.state.colorBall.fly(e.touches[0].pageX, e.touches[0].pageY);
-    this.setState({ goPig: true });
   };
 
   public closeModal = () => {
