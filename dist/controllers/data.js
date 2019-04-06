@@ -25,6 +25,10 @@ exports.getData = (req, res, next) => __awaiter(this, void 0, void 0, function* 
             utils_1.responseClient(res, 200, 1, "口令有误哦");
             return;
         }
+        if (amount === 0) {
+            utils_1.responseClient(res, 200, 1, "不能选择0个哦");
+            return;
+        }
         // 更新amount条数据并返回
         const noSendAccount = yield accounts_1.Accounts.find({ hasSend: false })
             .sort({

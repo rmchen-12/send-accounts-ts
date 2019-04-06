@@ -20,6 +20,11 @@ export const getData = async (
       return;
     }
 
+    if (amount === 0) {
+      responseClient(res, 200, 1, "不能选择0个哦");
+      return;
+    }
+
     // 更新amount条数据并返回
     const noSendAccount = await Accounts.find({ hasSend: false })
       .sort({

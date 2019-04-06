@@ -146,7 +146,7 @@ export default class Front extends React.Component<object, AdminState> {
       .then(res => {
         if (res.data.code === 1) {
           Toast.hide();
-          Toast.info("口令有误哦,重新输入口令吧");
+          Toast.info(`${res.data.message}`);
           return;
         }
         Toast.hide();
