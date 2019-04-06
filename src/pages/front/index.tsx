@@ -5,7 +5,7 @@ import copy from "copy-to-clipboard";
 import "./App.css";
 
 import ColorBall from "../../components/ColorBall";
-// import FlyPig from "../../components/FlyPig";
+import FlyPig from "../../components/FlyPig";
 
 interface Data {
   data: string;
@@ -25,6 +25,7 @@ export interface AdminState {
   colorBall: ColorBall;
   password: string;
   banner: string;
+  goPig: boolean;
 }
 
 export default class Front extends React.Component<object, AdminState> {
@@ -43,7 +44,8 @@ export default class Front extends React.Component<object, AdminState> {
       colors: ["#fdc0c8", "#fcedaa", "#90dfdc", "#eae0d5"]
     }),
     password: "",
-    banner: ""
+    banner: "",
+    goPig: false
   };
 
   private tip: React.RefObject<HTMLDivElement> = React.createRef();
@@ -207,6 +209,7 @@ export default class Front extends React.Component<object, AdminState> {
 
   public handleTouchStart = (e: any) => {
     this.state.colorBall.fly(e.touches[0].pageX, e.touches[0].pageY);
+    this.setState({ goPig: true });
   };
 
   public closeModal = () => {
@@ -225,11 +228,13 @@ export default class Front extends React.Component<object, AdminState> {
       showModal,
       disable,
       isCopy,
-      banner
+      banner,
+      goPig
     } = this.state;
     return (
       <div>
         <div className="App" style={{ opacity: isImgLoad ? 1 : 0 }}>
+          {goPig && <FlyPig />}
           <img
             src={
               process.env.NODE_ENV === "development"

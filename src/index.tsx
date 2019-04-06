@@ -3,28 +3,25 @@ import * as ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import * as loadable from "react-loadable";
 import registerServiceWorker from "./registerServiceWorker";
-// import frontLoading from "./components/Loading/frontLoading";
-// import adminLoading from "./components/Loading/adminLoading";
-import FlyPig from "./components/FlyPig";
+import frontLoading from "./components/Loading/frontLoading";
+import adminLoading from "./components/Loading/adminLoading";
 
 const Front = loadable({
   loader: () => import("./pages/front/index"),
-  loading: FlyPig
+  loading: frontLoading
 });
 
 const Admin = loadable({
   loader: () => import("./pages/admin/index"),
-  loading: FlyPig
+  loading: adminLoading
 });
 
 const App = (
   <Router>
-    <div>
-      <Switch>
-        <Route exact={true} path="/" component={Front} />
-        <Route exact={true} path="/admin" component={Admin} />
-      </Switch>
-    </div>
+    <Switch>
+      <Route exact={true} path="/" component={Front} />
+      <Route exact={true} path="/admin" component={Admin} />
+    </Switch>
   </Router>
 );
 
