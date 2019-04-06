@@ -62,7 +62,7 @@ exports.getStat = (req, res, next) => __awaiter(this, void 0, void 0, function* 
         });
         const todaySendNumber = yield accounts_1.Accounts.countDocuments({
             hasSend: true,
-            uploadTime: moment_1.default().format("YYYY-MM-DD")
+            getTime: moment_1.default().format("YYYY-MM-DD")
         });
         const leaveAccountNumber = yield accounts_1.Accounts.countDocuments({
             hasSend: false

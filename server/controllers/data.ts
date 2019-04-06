@@ -66,7 +66,7 @@ export const getStat = async (
     });
     const todaySendNumber = await Accounts.countDocuments({
       hasSend: true,
-      uploadTime: moment().format("YYYY-MM-DD")
+      getTime: moment().format("YYYY-MM-DD")
     });
     const leaveAccountNumber = await Accounts.countDocuments({
       hasSend: false
