@@ -3,17 +3,18 @@ import * as ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import * as loadable from "react-loadable";
 import registerServiceWorker from "./registerServiceWorker";
-import frontLoading from "./components/Loading/frontLoading";
-import adminLoading from "./components/Loading/adminLoading";
+// import frontLoading from "./components/Loading/frontLoading";
+// import adminLoading from "./components/Loading/adminLoading";
+import FlyPig from "./components/FlyPig";
 
 const Front = loadable({
   loader: () => import("./pages/front/index"),
-  loading: frontLoading
+  loading: FlyPig
 });
 
 const Admin = loadable({
   loader: () => import("./pages/admin/index"),
-  loading: adminLoading
+  loading: FlyPig
 });
 
 const App = (

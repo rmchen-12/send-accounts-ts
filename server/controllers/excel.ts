@@ -117,6 +117,7 @@ function handleExcel(
 
   // excelName是下载Excel的文件标题
   const excelName = data[0][0].date;
+  logger.info(`开始导出 ${excelName}.xlsx`);
   ejsExcel.renderExcelCb(exlBuf, data, (err: any, exlBuf2: any) => {
     if (err) {
       logger.error(err);
@@ -136,6 +137,8 @@ function handleExcel(
       res.write(chunk);
     });
     filestream.on("end", () => {
+      fs.unlinkSync(getPath(`static/excel/${excelName}.xlsx`));
+      logger.info(`导出成功 ${excelName}.xlsx`);
       res.end();
     });
   });

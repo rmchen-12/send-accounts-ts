@@ -9,11 +9,14 @@ body {
 }
 
 .App {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100vh;
+  width: 100vw;
   transition: all 0.3s ease;
+  overflow: hidden;
 }
 
 .App > img {
