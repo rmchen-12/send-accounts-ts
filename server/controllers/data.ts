@@ -20,7 +20,7 @@ export const getData = async (
       return;
     }
 
-    if (amount === 0) {
+    if (Number(amount) === 0) {
       responseClient(res, 200, 1, "不能选择0个哦");
       return;
     }

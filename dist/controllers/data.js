@@ -25,7 +25,7 @@ exports.getData = (req, res, next) => __awaiter(this, void 0, void 0, function* 
             utils_1.responseClient(res, 200, 1, "口令有误哦");
             return;
         }
-        if (amount === 0) {
+        if (Number(amount) === 0) {
             utils_1.responseClient(res, 200, 1, "不能选择0个哦");
             return;
         }
