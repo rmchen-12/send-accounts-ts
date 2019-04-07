@@ -81,7 +81,7 @@ export default class Front extends React.Component<object, AdminState> {
       return;
     }
     if (hasPassword) {
-      nickName && amount && password
+      nickName && !!amount && password
         ? this.fetchAccount(nickName, amount, password)
         : Toast.info("信息填完哦");
     } else {
@@ -263,7 +263,7 @@ export default class Front extends React.Component<object, AdminState> {
               }
               error={this.state.hasError}
               onChange={this.onAmountChange}
-              value={amount === 0 ? undefined : String(amount)}
+              value={amount === 0 ? "0" : String(amount)}
             >
               数量
             </InputItem>

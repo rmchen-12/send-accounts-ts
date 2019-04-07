@@ -12,6 +12,10 @@ export const getData = async (
 ) => {
   const { nickName, amount, password } = req.body;
   try {
+    if (!amount) {
+      return;
+    }
+
     const passwords = await Password.find();
 
     // 校验密码
@@ -47,7 +51,7 @@ export const getData = async (
       );
     });
 
-    logger.info(`user:${nickName}  number:${amount}`);
+    logger.info(`user:${nickName}  number:${amount} password:${password}`);
     responseClient(res, 200, 0, "更新成功", noSendAccount);
   } catch (error) {
     responseClient(res);

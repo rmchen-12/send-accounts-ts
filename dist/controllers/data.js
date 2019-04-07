@@ -19,6 +19,9 @@ const logger_1 = __importDefault(require("../utils/logger"));
 exports.getData = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     const { nickName, amount, password } = req.body;
     try {
+        if (!amount) {
+            return;
+        }
         const passwords = yield password_1.Password.find();
         // 校验密码
         if (password && Number(passwords[0].password) !== Number(password)) {
@@ -46,7 +49,7 @@ exports.getData = (req, res, next) => __awaiter(this, void 0, void 0, function* 
                 }
             });
         }));
-        logger_1.default.info(`user:${nickName}  number:${amount}`);
+        logger_1.default.info(`user:${nickName}  number:${amount} password:${password}`);
         utils_1.responseClient(res, 200, 0, "更新成功", noSendAccount);
     }
     catch (error) {
