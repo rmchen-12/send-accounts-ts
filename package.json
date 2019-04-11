@@ -79,7 +79,9 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "server": "cross-env NODE_ENV=development nodemon dist/server.js"
+    "server": "cross-env NODE_ENV=development nodemon dist/server.js",
+    "deploy": "pm2 deploy ecosystem.config.js production",
+    "deploy-setup": "pm2 deploy ecosystem.config.js production setup"
   },
   "theme": {
     "brand-primary": "rgb(252,177,247)",
