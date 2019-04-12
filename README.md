@@ -2,10 +2,6 @@
 
 > 启动 npm run server 和 npm start
 
-> 部署 pm2 deploy ecosystem.json production
-
-> 服务器地址 47.99.146.10
-
 ---
 
 ## todos
