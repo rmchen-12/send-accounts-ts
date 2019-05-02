@@ -170,7 +170,7 @@ export default class Front extends React.Component<object, AdminState> {
   public onAmountChange = (value: string) => {
     const { leaveAccount } = this.state;
 
-    if (Number(value) <= (leaveAccount <= 100 ? leaveAccount : 100)) {
+    if (Number(value) <= (leaveAccount <= 10 ? leaveAccount : 10)) {
       this.setState({
         hasError: false
       });
@@ -179,7 +179,7 @@ export default class Front extends React.Component<object, AdminState> {
         hasError: true
       });
       Toast.info(
-        leaveAccount <= 100 ? `最多只能领${leaveAccount}个` : `最多只能领100个`
+        leaveAccount <= 10 ? `最多只能领${leaveAccount}个` : `最多只能领10个`
       );
     }
 
@@ -257,9 +257,9 @@ export default class Front extends React.Component<object, AdminState> {
             <InputItem
               type="digit"
               placeholder={
-                leaveAccount <= 100
+                leaveAccount <= 10
                   ? `输入领取数量，库存${leaveAccount}个`
-                  : "输入领取数量，最多领100个哦"
+                  : "输入领取数量，最多领10个哦"
               }
               error={this.state.hasError}
               onChange={this.onAmountChange}
