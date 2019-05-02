@@ -81,7 +81,8 @@
     "build": "node scripts/build.js",
     "server": "cross-env NODE_ENV=development nodemon dist/server.js",
     "deploy": "pm2 deploy ecosystem.json production",
-    "deploy-setup": "pm2 deploy ecosystem.json production setup"
+    "deploy-setup": "pm2 deploy ecosystem.json production setup",
+    "ssh": "ssh root@47.99.146.10"
   },
   "theme": {
     "brand-primary": "rgb(252,177,247)",
