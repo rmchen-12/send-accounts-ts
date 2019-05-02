@@ -17,7 +17,7 @@
       "user": "root",
       "host": ["47.99.146.10"],
       "port": "22",
-      "ref": "origin/master",
+      "ref": "origin/test",
       "repo": "git@github.com:rmchen-12/send-accounts-ts.git",
       "path": "/www/sendAccounts",
       "ssh_options": "StrictHostKeyChecking=no",
