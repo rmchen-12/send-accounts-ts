@@ -1,11 +1,12 @@
-import * as React from "react";
-import { http } from "../../http";
-import { InputItem, Toast, Button, Modal } from "antd-mobile";
-import copy from "copy-to-clipboard";
-import "./App.css";
+import './App.css';
 
-import ColorBall from "../../components/ColorBall";
-import FlyPig from "../../components/FlyPig";
+import { Button, InputItem, Modal, Toast } from 'antd-mobile';
+import copy from 'copy-to-clipboard';
+import * as React from 'react';
+
+import ColorBall from '../../components/ColorBall';
+import FlyPig from '../../components/FlyPig';
+import { http } from '../../http';
 
 interface Data {
   data: string;
@@ -239,7 +240,7 @@ export default class Front extends React.Component<object, AdminState> {
             src={
               process.env.NODE_ENV === "development"
                 ? `http://localhost:8080/${banner}`
-                : `${window.location.origin}/${banner}`
+                : `http://47.99.146.10:8080/${banner}`
             }
             alt="banner"
             width="100%"
