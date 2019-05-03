@@ -13,11 +13,16 @@ const utils_1 = require("../utils");
 exports.updatePassword = (req, res) => __awaiter(this, void 0, void 0, function* () {
     const { password } = req.body;
     const passwords = yield password_1.Password.find();
-    yield password_1.Password.updateOne({ password: passwords[0].password }, { password });
+    if (passwords.length === 0) {
+        yield password_1.Password.create({ password });
+    }
+    else {
+        yield password_1.Password.updateOne({ password: passwords[0] && passwords[0].password }, { password });
+    }
     utils_1.responseClient(res, 200, 0, "更新成功");
 });
 exports.getPassword = (req, res) => __awaiter(this, void 0, void 0, function* () {
     const passwords = yield password_1.Password.find();
-    utils_1.responseClient(res, 200, 0, "success", passwords[0].password);
+    utils_1.responseClient(res, 200, 0, "success", passwords[0] && passwords[0].password ? passwords[0].password : "");
 });
 //# sourceMappingURL=password.js.map

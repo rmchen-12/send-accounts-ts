@@ -1,9 +1,10 @@
-import { NextFunction, Request, Response } from "express";
-import moment from "moment";
-import { Accounts } from "../models/accounts";
-import { Password } from "../models/password";
-import { countName, responseClient } from "../utils";
-import logger from "../utils/logger";
+import { NextFunction, Request, Response } from 'express';
+import moment from 'moment';
+
+import { Accounts } from '../models/accounts';
+import { Password } from '../models/password';
+import { countName, responseClient } from '../utils';
+import logger from '../utils/logger';
 
 export const getData = async (
   req: Request,
@@ -19,7 +20,10 @@ export const getData = async (
     const passwords = await Password.find();
 
     // 校验密码
-    if (password && Number(passwords[0].password) !== Number(password)) {
+    if (
+      password &&
+      Number(passwords[0] && passwords[0].password) !== Number(password)
+    ) {
       responseClient(res, 200, 1, "口令有误哦");
       return;
     }
@@ -82,7 +86,7 @@ export const getStat = async (
     });
     const passwords = await Password.find({});
 
-    stat.hasPassword = passwords[0].password ? true : false;
+    stat.hasPassword = passwords[0] && passwords[0].password ? true : false;
     stat.todayTotalNumber = todayTotalNumber;
     stat.todaySendNumber = todaySendNumber;
     stat.totalNumber = totalNumber;
