@@ -87,7 +87,7 @@ function excel2db(file: string, totalNumber: number) {
   const obj = xlsx.parse(getPath(`static/upload/${file}`));
   const fileData = obj[0].data;
   for (let i = 1; i < fileData.length; i++) {
-    Accounts.create({
+    const account = new Accounts({
       data: fileData[i],
       hasSend: false,
       nickName: undefined,
@@ -95,8 +95,7 @@ function excel2db(file: string, totalNumber: number) {
       uploadTime: moment().format("YYYY-MM-DD"),
       getTime: undefined
     });
-    // const account = new Accounts({});
-    // account.save();
+    account.save();
   }
   logger.info(`${file} 上传成功`);
 }
