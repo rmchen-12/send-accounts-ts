@@ -1,12 +1,13 @@
-import ejsExcel from "ejsexcel";
-import { Request, Response } from "express";
-import fs from "fs";
-import moment from "moment";
-import multer from "multer";
-import xlsx from "node-xlsx";
-import { Accounts } from "../models/accounts";
-import { countName, getPath, responseClient } from "../utils";
-import logger from "../utils/logger";
+import ejsExcel from 'ejsexcel';
+import { Request, Response } from 'express';
+import fs from 'fs';
+import moment from 'moment';
+import multer from 'multer';
+import xlsx from 'node-xlsx';
+
+import { Accounts } from '../models/accounts';
+import { countName, getPath, responseClient } from '../utils';
+import logger from '../utils/logger';
 
 const upload = multer({ dest: "static/upload/" }).single("file"); // for parsing multipart/form-data
 
@@ -17,6 +18,10 @@ export const uploadExcel = async (req: Request, res: Response) => {
   }
 
   upload(req, res, async err => {
+    if (err) {
+      logger.info(err);
+      return responseClient(res, 200, 1, err);
+    }
     const totalNumber = await Accounts.countDocuments({});
     excel2db(req.file.filename, totalNumber);
     responseClient(res, 200, 0, "上传成功");
@@ -92,6 +97,7 @@ function excel2db(file: string, totalNumber: number) {
     });
     account.save();
   }
+  logger.info(`${file} 上传成功`);
 }
 
 function handleExcel(

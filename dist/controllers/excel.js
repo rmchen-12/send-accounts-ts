@@ -26,6 +26,10 @@ exports.uploadExcel = (req, res) => __awaiter(this, void 0, void 0, function* ()
         fs_1.default.unlinkSync(utils_1.getPath(`static/upload/${file[0]}`));
     }
     upload(req, res, (err) => __awaiter(this, void 0, void 0, function* () {
+        if (err) {
+            logger_1.default.info(err);
+            return utils_1.responseClient(res, 200, 1, err);
+        }
         const totalNumber = yield accounts_1.Accounts.countDocuments({});
         excel2db(req.file.filename, totalNumber);
         utils_1.responseClient(res, 200, 0, "上传成功");
@@ -93,6 +97,7 @@ function excel2db(file, totalNumber) {
         });
         account.save();
     }
+    logger_1.default.info(`${file} 上传成功`);
 }
 function handleExcel(exlBuf, stat, doc, res) {
     // 这个data是模板上的标题，也就是你表格上面的标题
