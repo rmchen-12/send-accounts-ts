@@ -86,6 +86,7 @@ exports.exportExcel = (req, res) => __awaiter(this, void 0, void 0, function* ()
 function excel2db(file, totalNumber) {
     const obj = node_xlsx_1.default.parse(utils_1.getPath(`static/upload/${file}`));
     const fileData = obj[0].data;
+    console.log(fileData);
     for (let i = 1; i < fileData.length; i++) {
         const account = new accounts_1.Accounts({
             data: fileData[i],

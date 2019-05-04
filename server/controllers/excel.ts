@@ -86,6 +86,8 @@ export const exportExcel = async (req: Request, res: Response) => {
 function excel2db(file: string, totalNumber: number) {
   const obj = xlsx.parse(getPath(`static/upload/${file}`));
   const fileData = obj[0].data;
+  console.log(fileData);
+
   for (let i = 1; i < fileData.length; i++) {
     const account = new Accounts({
       data: fileData[i],
