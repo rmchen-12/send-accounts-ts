@@ -1,9 +1,10 @@
-import { NextFunction, Request, Response } from "express";
-import moment from "moment";
-import { Accounts } from "../models/accounts";
-import { Password } from "../models/password";
-import { countName, responseClient } from "../utils";
-import logger from "../utils/logger";
+import { NextFunction, Request, Response } from 'express';
+import moment from 'moment';
+
+import { Accounts } from '../models/accounts';
+import { Password } from '../models/password';
+import { countName, responseClient } from '../utils';
+import logger from '../utils/logger';
 
 export const getData = async (
   req: Request,
@@ -15,8 +16,12 @@ export const getData = async (
     if (!amount) {
       return;
     }
-
-    const passwords = await Password.find();
+    let passwords;
+    passwords = await Password.find();
+    if (passwords.length === 0) {
+      await Password.create({ password: "" });
+    }
+    passwords = await Password.find();
 
     // 校验密码
     if (password && Number(passwords[0].password) !== Number(password)) {
