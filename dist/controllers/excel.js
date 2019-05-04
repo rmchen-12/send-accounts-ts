@@ -30,8 +30,8 @@ exports.uploadExcel = (req, res) => __awaiter(this, void 0, void 0, function* ()
             logger_1.default.info(err);
             return utils_1.responseClient(res, 200, 1, err);
         }
-        const totalNumber = yield accounts_1.Accounts.countDocuments({});
-        excel2db(req.file.filename, totalNumber);
+        const totalNumber = yield accounts_1.Accounts.find({}).sort({ id: -1 });
+        excel2db(req.file.filename, totalNumber[0].id);
         utils_1.responseClient(res, 200, 0, "上传成功");
     }));
 });

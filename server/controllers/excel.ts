@@ -22,8 +22,8 @@ export const uploadExcel = async (req: Request, res: Response) => {
       logger.info(err);
       return responseClient(res, 200, 1, err);
     }
-    const totalNumber = await Accounts.countDocuments({});
-    excel2db(req.file.filename, totalNumber);
+    const totalNumber = await Accounts.find({}).sort({ id: -1 });
+    excel2db(req.file.filename, totalNumber[0].id);
     responseClient(res, 200, 0, "上传成功");
   });
 };

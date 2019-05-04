@@ -1,4 +1,4 @@
-import { Document, Model, model, Schema } from "mongoose";
+import { Document, Model, model, Schema } from 'mongoose';
 
 export interface AccountsModal extends Document {
   data: string; // 账号----密码
