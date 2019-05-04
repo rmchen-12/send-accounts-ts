@@ -84,23 +84,20 @@ exports.exportExcel = (req, res) => __awaiter(this, void 0, void 0, function* ()
     handleExcel(exlBuf, stat, doc, res);
 });
 function excel2db(file, totalNumber) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const obj = node_xlsx_1.default.parse(utils_1.getPath(`static/upload/${file}`));
-        const fileData = obj[0].data;
-        for (let i = 1; i < fileData.length; i++) {
-            yield accounts_1.Accounts.create({
-                data: fileData[i],
-                hasSend: false,
-                nickName: undefined,
-                id: i + totalNumber,
-                uploadTime: moment_1.default().format("YYYY-MM-DD"),
-                getTime: undefined
-            });
-            // const account = new Accounts({});
-            // account.save();
-        }
-        yield logger_1.default.info(`${file} 上传成功`);
-    });
+    const obj = node_xlsx_1.default.parse(utils_1.getPath(`static/upload/${file}`));
+    const fileData = obj[0].data;
+    for (let i = 1; i < fileData.length; i++) {
+        const account = new accounts_1.Accounts({
+            data: fileData[i],
+            hasSend: false,
+            nickName: undefined,
+            id: i + totalNumber,
+            uploadTime: moment_1.default().format("YYYY-MM-DD"),
+            getTime: undefined
+        });
+        account.save();
+    }
+    logger_1.default.info(`${file} 上传成功`);
 }
 function handleExcel(exlBuf, stat, doc, res) {
     // 这个data是模板上的标题，也就是你表格上面的标题

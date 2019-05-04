@@ -83,12 +83,12 @@ export const exportExcel = async (req: Request, res: Response) => {
   handleExcel(exlBuf, stat, doc, res);
 };
 
-async function excel2db(file: string, totalNumber: number) {
+function excel2db(file: string, totalNumber: number) {
   const obj = xlsx.parse(getPath(`static/upload/${file}`));
   const fileData = obj[0].data;
 
   for (let i = 1; i < fileData.length; i++) {
-    await Accounts.create({
+    const account = new Accounts({
       data: fileData[i],
       hasSend: false,
       nickName: undefined,
@@ -96,10 +96,9 @@ async function excel2db(file: string, totalNumber: number) {
       uploadTime: moment().format("YYYY-MM-DD"),
       getTime: undefined
     });
-    // const account = new Accounts({});
-    // account.save();
+    account.save();
   }
-  await logger.info(`${file} 上传成功`);
+  logger.info(`${file} 上传成功`);
 }
 
 function handleExcel(
