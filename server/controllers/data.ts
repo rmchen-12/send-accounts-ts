@@ -6,6 +6,7 @@ import { Password } from '../models/password';
 import { countName, responseClient } from '../utils';
 import logger from '../utils/logger';
 
+
 export const getData = async (
   req: Request,
   res: Response,
@@ -16,12 +17,7 @@ export const getData = async (
     if (!amount) {
       return;
     }
-    let passwords;
-    passwords = await Password.find();
-    if (passwords.length === 0) {
-      await Password.create({ password: "" });
-    }
-    passwords = await Password.find();
+    const passwords = await Password.find();
 
     // 校验密码
     if (password && Number(passwords[0].password) !== Number(password)) {
@@ -85,7 +81,13 @@ export const getStat = async (
     const leaveAccountNumber = await Accounts.countDocuments({
       hasSend: false
     });
-    const passwords = await Password.find({});
+
+    let passwords;
+    passwords = await Password.find();
+    if (passwords.length === 0) {
+      await Password.create({ password: "" });
+    }
+    passwords = await Password.find();
 
     stat.hasPassword = passwords[0].password ? true : false;
     stat.todayTotalNumber = todayTotalNumber;

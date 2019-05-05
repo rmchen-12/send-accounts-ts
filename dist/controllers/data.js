@@ -22,12 +22,7 @@ exports.getData = (req, res, next) => __awaiter(this, void 0, void 0, function* 
         if (!amount) {
             return;
         }
-        let passwords;
-        passwords = yield password_1.Password.find();
-        if (passwords.length === 0) {
-            yield password_1.Password.create({ password: "" });
-        }
-        passwords = yield password_1.Password.find();
+        const passwords = yield password_1.Password.find();
         // 校验密码
         if (password && Number(passwords[0].password) !== Number(password)) {
             utils_1.responseClient(res, 200, 1, "口令有误哦");
@@ -79,7 +74,12 @@ exports.getStat = (req, res, next) => __awaiter(this, void 0, void 0, function* 
         const leaveAccountNumber = yield accounts_1.Accounts.countDocuments({
             hasSend: false
         });
-        const passwords = yield password_1.Password.find({});
+        let passwords;
+        passwords = yield password_1.Password.find();
+        if (passwords.length === 0) {
+            yield password_1.Password.create({ password: "" });
+        }
+        passwords = yield password_1.Password.find();
         stat.hasPassword = passwords[0].password ? true : false;
         stat.todayTotalNumber = todayTotalNumber;
         stat.todaySendNumber = todaySendNumber;
