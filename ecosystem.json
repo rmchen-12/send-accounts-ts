@@ -7,7 +7,7 @@
         "COMMON_VARIABLE": "true"
       },
       "env_production": {
-        "PM2_SERVE_PORT": 80,
+        "PM2_SERVE_PORT": 8080,
         "NODE_ENV": "production"
       }
     }
