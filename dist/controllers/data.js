@@ -25,9 +25,19 @@ exports.getData = (req, res, next) => __awaiter(this, void 0, void 0, function* 
         }
         const passwords = yield password_1.Password.find();
         // 校验密码
-        if (password && Number(passwords[0].password) !== Number(password)) {
-            utils_1.responseClient(res, 200, 1, "口令有误哦");
-            return;
+        if (type === "fight") {
+            if (password &&
+                Number(passwords[0].password) !==
+                    Number(password.slice(0, password.length - 1))) {
+                utils_1.responseClient(res, 200, 1, "口令有误哦");
+                return;
+            }
+        }
+        else {
+            if (password && Number(passwords[0].password) !== Number(password)) {
+                utils_1.responseClient(res, 200, 1, "口令有误哦");
+                return;
+            }
         }
         if (Number(amount) === 0) {
             utils_1.responseClient(res, 200, 1, "不能选择0个哦");

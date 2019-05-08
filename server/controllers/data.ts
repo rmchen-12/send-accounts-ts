@@ -21,9 +21,20 @@ export const getData = async (
     const passwords = await Password.find();
 
     // 校验密码
-    if (password && Number(passwords[0].password) !== Number(password)) {
-      responseClient(res, 200, 1, "口令有误哦");
-      return;
+    if (type === "fight") {
+      if (
+        password &&
+        Number(passwords[0].password) !==
+          Number(password.slice(0, password.length - 1))
+      ) {
+        responseClient(res, 200, 1, "口令有误哦");
+        return;
+      }
+    } else {
+      if (password && Number(passwords[0].password) !== Number(password)) {
+        responseClient(res, 200, 1, "口令有误哦");
+        return;
+      }
     }
 
     if (Number(amount) === 0) {
