@@ -1,17 +1,22 @@
+import moment from 'dayjs';
 import ejsExcel from 'ejsexcel';
 import { Request, Response } from 'express';
 import fs from 'fs';
-import moment from 'moment';
+import _ from 'lodash';
 import multer from 'multer';
 import xlsx from 'node-xlsx';
 
 import { Accounts } from '../models/accounts';
+import { TaskAccounts } from '../models/taskAccounts';
 import { countName, getPath, responseClient } from '../utils';
 import logger from '../utils/logger';
+
 
 const upload = multer({ dest: "static/upload/" }).single("file"); // for parsing multipart/form-data
 
 export const uploadExcel = async (req: Request, res: Response) => {
+  const excelType: app.ExcelType = req.query.uploadType;
+
   if (fs.readdirSync(getPath("static/upload"))[0]) {
     const file = fs.readdirSync(getPath("static/upload"));
     fs.unlinkSync(getPath(`static/upload/${file[0]}`));
@@ -22,18 +27,38 @@ export const uploadExcel = async (req: Request, res: Response) => {
       logger.info(err);
       return responseClient(res, 200, 1, err);
     }
-    const totalNumber = await Accounts.countDocuments();
-    excel2db(req.file.filename, totalNumber);
+    if (excelType === "fight") {
+      const totalNumber = await Accounts.countDocuments();
+      await excel2db(req.file.filename, totalNumber, excelType);
+    } else {
+      const totalNumber = await TaskAccounts.countDocuments();
+      await excel2db(req.file.filename, totalNumber, excelType);
+    }
     responseClient(res, 200, 0, "上传成功");
   });
 };
 
 export const exportExcel = async (req: Request, res: Response) => {
   const day: string = req.body.day || moment().format("YYYY-MM-DD");
+  const exportType: app.ExcelType = req.body.exportType;
 
-  const a = await Accounts.find({
-    $or: [{ uploadTime: day }, { getTime: day }]
-  }).sort({ nickName: -1 });
+  if (exportType === "fight") {
+    await _export(Accounts, day, res);
+  } else {
+    await _export(TaskAccounts, day, res);
+  }
+};
+
+async function _export(
+  model: typeof Accounts | typeof TaskAccounts,
+  day: string,
+  res: Response
+) {
+  const a = await model
+    .find({
+      $or: [{ uploadTime: day }, { getTime: day }]
+    })
+    .sort({ nickName: -1 });
 
   if (a.length === 0) {
     responseClient(res, 200, 2, "没有该天的数据");
@@ -41,7 +66,7 @@ export const exportExcel = async (req: Request, res: Response) => {
   }
 
   const nameCount: object[] = [];
-  const sendAccounts = await Accounts.find(
+  const sendAccounts = await model.find(
     { hasSend: true, getTime: day },
     "nickName"
   );
@@ -69,36 +94,18 @@ export const exportExcel = async (req: Request, res: Response) => {
   const exlBuf = fs.readFileSync(getPath("static/model.xlsx"));
   const stat = {} as app.ExcelStat;
   stat.date = day;
-  stat.accountsNumber = await Accounts.countDocuments({ uploadTime: day });
-  stat.sendCount = await Accounts.countDocuments({
+  stat.accountsNumber = await model.countDocuments({ uploadTime: day });
+  stat.sendCount = await model.countDocuments({
     hasSend: true,
     uploadTime: day
   });
-  stat.leaveCount = await Accounts.countDocuments({
+  stat.leaveCount = await model.countDocuments({
     hasSend: false,
     uploadTime: day
   });
   stat.nameCount = nameCount;
 
   handleExcel(exlBuf, stat, doc, res);
-};
-
-function excel2db(file: string, totalNumber: number) {
-  const obj = xlsx.parse(getPath(`static/upload/${file}`));
-  const fileData = obj[0].data;
-
-  for (let i = 1; i < fileData.length; i++) {
-    const account = new Accounts({
-      data: fileData[i],
-      hasSend: false,
-      nickName: undefined,
-      id: i + totalNumber,
-      uploadTime: moment().format("YYYY-MM-DD"),
-      getTime: undefined
-    });
-    account.save();
-  }
-  logger.info(`${file} 上传成功`);
 }
 
 function handleExcel(
@@ -149,4 +156,51 @@ function handleExcel(
       res.end();
     });
   });
+}
+
+async function excel2db(
+  file: string,
+  totalNumber: number,
+  excelType: app.ExcelType
+) {
+  const obj = xlsx.parse(getPath(`static/upload/${file}`));
+  const fileData = _.flatten(obj[0].data);
+
+  if (excelType === "fight") {
+    for (let i = 1; i < fileData.length; i++) {
+      try {
+        const account = new Accounts({
+          data: fileData[i],
+          hasSend: false,
+          nickName: undefined,
+          id: i + totalNumber,
+          uploadTime: moment().format("YYYY-MM-DD"),
+          getTime: undefined
+        });
+        await account.save();
+      } catch (error) {
+        logger.error(`${excelType} ${error}`);
+        break;
+      }
+    }
+  } else {
+    for (let i = 1; i < fileData.length; i++) {
+      try {
+        const taskAccount = new TaskAccounts({
+          data: fileData[i],
+          hasSend: false,
+          nickName: undefined,
+          id: i + totalNumber,
+          uploadTime: moment().format("YYYY-MM-DD"),
+          getTime: undefined
+        });
+        await taskAccount.save();
+      } catch (error) {
+        logger.error(`${excelType} ${error}`);
+        break;
+      }
+    }
+  }
+
+  logger.info(`${file} 上传成功`);
 }

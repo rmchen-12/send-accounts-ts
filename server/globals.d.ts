@@ -21,4 +21,6 @@ declare namespace app {
     leaveCount: number;
     nameCount: object[];
   }
+
+  type ExcelType = "fight" | "task";
 }

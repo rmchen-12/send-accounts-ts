@@ -1,7 +1,7 @@
-import React from "react";
+import { Button, Icon, message, Spin, Upload } from 'antd';
+import React from 'react';
+import { http } from 'src/http';
 
-import { http } from "src/http";
-import { Upload, message, Button, Icon, Spin } from "antd";
 
 interface ImgState {
   loading: boolean;

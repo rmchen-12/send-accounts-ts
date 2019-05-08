@@ -1,11 +1,14 @@
-import * as React from "react";
-import { http } from "../../http";
-import { InputItem, Toast, Button, Modal } from "antd-mobile";
-import copy from "copy-to-clipboard";
-import "./App.css";
+import './App.css';
 
-import ColorBall from "../../components/ColorBall";
-import FlyPig from "../../components/FlyPig";
+import { Button, InputItem, Modal, SegmentedControl, Toast } from 'antd-mobile';
+import copy from 'copy-to-clipboard';
+import * as React from 'react';
+
+import ColorBall from '../../components/ColorBall';
+import FlyPig from '../../components/FlyPig';
+import { http } from '../../http';
+
+
 
 interface Data {
   data: string;
@@ -26,6 +29,7 @@ export interface AdminState {
   password: string;
   banner: string;
   goPig: boolean;
+  type: string;
 }
 
 export default class Front extends React.Component<object, AdminState> {
@@ -45,7 +49,8 @@ export default class Front extends React.Component<object, AdminState> {
     }),
     password: "",
     banner: "",
-    goPig: false
+    goPig: false,
+    type: "task"
   };
 
   private tip: React.RefObject<HTMLDivElement> = React.createRef();
@@ -92,27 +97,19 @@ export default class Front extends React.Component<object, AdminState> {
   };
 
   public getStat = () => {
+    const { type, isImgLoad } = this.state;
     http
-      .get("/getStat")
-      .then(
-        (res: {
-          data: {
-            data: {
-              leaveAccountNumber: any;
-              hasPassword: any;
-            };
-          };
-        }) => {
-          const { leaveAccountNumber, hasPassword } = res.data.data;
-          this.setState({
-            leaveAccount: leaveAccountNumber,
-            hasPassword
-          });
-          if (this.state.isImgLoad) {
-            Toast.hide();
-          }
+      .post("/getStat", { type })
+      .then(res => {
+        const { leaveAccountNumber, hasPassword } = res.data.data;
+        this.setState({
+          leaveAccount: leaveAccountNumber,
+          hasPassword
+        });
+        if (isImgLoad) {
+          Toast.hide();
         }
-      )
+      })
       .catch((err: any) => {
         Toast.hide();
         Toast.fail("网络错误，请联系管理员哦");
@@ -136,13 +133,15 @@ export default class Front extends React.Component<object, AdminState> {
     amount: AdminState["amount"],
     password?: AdminState["password"]
   ) => {
+    const { type } = this.state;
     Toast.loading("稍等哦", 0);
     this.setState({ goPig: true });
     http
       .post("/getData", {
         nickName,
         amount,
-        password
+        password,
+        type
       })
       .then(res => {
         if (res.data.code === 1) {
@@ -216,6 +215,16 @@ export default class Front extends React.Component<object, AdminState> {
     this.setState({ showModal: false });
   };
 
+  public handleTypeChange = (value: string) => {
+    const map = {
+      任务群: "task",
+      投手群: "fight"
+    };
+    this.setState({ type: map[value] }, () => {
+      this.getStat();
+    });
+  };
+
   public render() {
     const {
       nickName,
@@ -229,7 +238,8 @@ export default class Front extends React.Component<object, AdminState> {
       disable,
       isCopy,
       banner,
-      goPig
+      goPig,
+      type
     } = this.state;
     return (
       <div>
@@ -247,6 +257,13 @@ export default class Front extends React.Component<object, AdminState> {
             onLoad={this.imgLoad}
           />
           <div className="input-wrapper">
+            <SegmentedControl
+              values={["任务群", "投手群"]}
+              onValueChange={this.handleTypeChange}
+              style={{ height: 40 }}
+              selectedIndex={type === "task" ? 0 : 1}
+            />
+
             <InputItem
               placeholder="输入你的微博ID"
               onChange={this.onIdChange}
@@ -254,6 +271,7 @@ export default class Front extends React.Component<object, AdminState> {
             >
               id
             </InputItem>
+
             <InputItem
               type="digit"
               placeholder={
@@ -267,6 +285,7 @@ export default class Front extends React.Component<object, AdminState> {
             >
               数量
             </InputItem>
+
             {hasPassword ? (
               <InputItem
                 type="password"

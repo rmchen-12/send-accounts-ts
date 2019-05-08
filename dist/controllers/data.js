@@ -11,13 +11,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const moment_1 = __importDefault(require("moment"));
+const dayjs_1 = __importDefault(require("dayjs"));
 const accounts_1 = require("../models/accounts");
 const password_1 = require("../models/password");
+const taskAccounts_1 = require("../models/taskAccounts");
 const utils_1 = require("../utils");
 const logger_1 = __importDefault(require("../utils/logger"));
 exports.getData = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-    const { nickName, amount, password } = req.body;
+    const { nickName, amount, password, type } = req.body;
     try {
         if (!amount) {
             return;
@@ -33,22 +34,9 @@ exports.getData = (req, res, next) => __awaiter(this, void 0, void 0, function* 
             return;
         }
         // 更新amount条数据并返回
-        const noSendAccount = yield accounts_1.Accounts.find({ hasSend: false })
-            .sort({
-            id: 1
-        })
-            .limit(amount);
-        noSendAccount.forEach((doc) => __awaiter(this, void 0, void 0, function* () {
-            yield accounts_1.Accounts.updateOne({
-                _id: doc._id
-            }, {
-                $set: {
-                    getTime: moment_1.default().format("YYYY-MM-DD"),
-                    hasSend: true,
-                    nickName
-                }
-            });
-        }));
+        const noSendAccount = type === "fight"
+            ? yield _update(accounts_1.Accounts, amount, nickName)
+            : yield _update(taskAccounts_1.TaskAccounts, amount, nickName);
         logger_1.default.info(`user:${nickName}  number:${amount} password:${password}`);
         utils_1.responseClient(res, 200, 0, "更新成功", noSendAccount);
     }
@@ -59,21 +47,37 @@ exports.getData = (req, res, next) => __awaiter(this, void 0, void 0, function* 
         }
     }
 });
+function _update(model, amount, nickName) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // 更新amount条数据并返回
+        const noSendAccount = yield model
+            .find({ hasSend: false })
+            .sort({
+            id: 1
+        })
+            .limit(amount);
+        noSendAccount.forEach((doc) => __awaiter(this, void 0, void 0, function* () {
+            yield model.updateOne({
+                _id: doc._id
+            }, {
+                $set: {
+                    getTime: dayjs_1.default().format("YYYY-MM-DD"),
+                    hasSend: true,
+                    nickName
+                }
+            });
+        }));
+        return noSendAccount;
+    });
+}
 exports.getStat = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    const { type } = req.body;
     const stat = {};
     stat.countDTO = [];
     try {
-        const totalNumber = yield accounts_1.Accounts.countDocuments({});
-        const todayTotalNumber = yield accounts_1.Accounts.countDocuments({
-            uploadTime: moment_1.default().format("YYYY-MM-DD")
-        });
-        const todaySendNumber = yield accounts_1.Accounts.countDocuments({
-            hasSend: true,
-            getTime: moment_1.default().format("YYYY-MM-DD")
-        });
-        const leaveAccountNumber = yield accounts_1.Accounts.countDocuments({
-            hasSend: false
-        });
+        const { totalNumber, todayTotalNumber, todaySendNumber, leaveAccountNumber, aAccounts } = type === "fight"
+            ? yield _getStat(accounts_1.Accounts)
+            : yield _getStat(taskAccounts_1.TaskAccounts);
         let passwords;
         passwords = yield password_1.Password.find();
         if (passwords.length === 0) {
@@ -85,7 +89,6 @@ exports.getStat = (req, res, next) => __awaiter(this, void 0, void 0, function* 
         stat.todaySendNumber = todaySendNumber;
         stat.totalNumber = totalNumber;
         stat.leaveAccountNumber = leaveAccountNumber;
-        const aAccounts = yield accounts_1.Accounts.find({ hasSend: true, getTime: moment_1.default().format("YYYY-MM-DD") }, "nickName");
         const allNickNames = aAccounts.map(v => v.nickName);
         const nickNames = [...new Set(allNickNames)];
         nickNames.forEach(name => {
@@ -101,4 +104,27 @@ exports.getStat = (req, res, next) => __awaiter(this, void 0, void 0, function* 
         }
     }
 });
+function _getStat(model) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const totalNumber = yield model.countDocuments({});
+        const todayTotalNumber = yield model.countDocuments({
+            uploadTime: dayjs_1.default().format("YYYY-MM-DD")
+        });
+        const todaySendNumber = yield model.countDocuments({
+            hasSend: true,
+            getTime: dayjs_1.default().format("YYYY-MM-DD")
+        });
+        const leaveAccountNumber = yield model.countDocuments({
+            hasSend: false
+        });
+        const aAccounts = yield model.find({ hasSend: true, getTime: dayjs_1.default().format("YYYY-MM-DD") }, "nickName");
+        return {
+            totalNumber,
+            todayTotalNumber,
+            todaySendNumber,
+            leaveAccountNumber,
+            aAccounts
+        };
+    });
+}
 //# sourceMappingURL=data.js.map

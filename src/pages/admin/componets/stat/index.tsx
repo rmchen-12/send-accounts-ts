@@ -1,8 +1,7 @@
-import React, { PureComponent } from "react";
-import Echarts from "echarts-for-react";
-
-import { http } from "src/http";
-import { Spin, Row, Col } from "antd";
+import { Col, Radio, Row, Spin } from 'antd';
+import Echarts from 'echarts-for-react';
+import React, { PureComponent } from 'react';
+import { http } from 'src/http';
 
 interface CountData {
   name: string;
@@ -16,6 +15,7 @@ interface StatState {
   todayTotalNumber: number;
   countData: CountData[];
   loading: boolean;
+  type: string;
 }
 
 export class Stat extends PureComponent<object, StatState> {
@@ -25,7 +25,8 @@ export class Stat extends PureComponent<object, StatState> {
     todaySendNumber: 0,
     todayTotalNumber: 0,
     countData: [],
-    loading: false
+    loading: false,
+    type: "fight"
   };
 
   public componentDidMount() {
@@ -33,9 +34,10 @@ export class Stat extends PureComponent<object, StatState> {
   }
 
   public getStat = () => {
+    const { type } = this.state;
     this.setState({ loading: true });
     http
-      .get("/getStat")
+      .post("/getStat", { type })
       .then(res => {
         const {
           leaveAccountNumber,
@@ -60,6 +62,12 @@ export class Stat extends PureComponent<object, StatState> {
       });
   };
 
+  public handleTypeChange = (e: any) => {
+    this.setState({ type: e.target.value }, () => {
+      this.getStat();
+    });
+  };
+
   public render() {
     const {
       leaveAccountNumber,
@@ -71,6 +79,15 @@ export class Stat extends PureComponent<object, StatState> {
 
     return (
       <Spin spinning={loading}>
+        <Radio.Group
+          defaultValue="fight"
+          buttonStyle="solid"
+          onChange={this.handleTypeChange}
+          style={{ marginBottom: 20 }}
+        >
+          <Radio.Button value="fight">打榜</Radio.Button>
+          <Radio.Button value="task">任务</Radio.Button>
+        </Radio.Group>
         <Row
           align="middle"
           justify="space-around"

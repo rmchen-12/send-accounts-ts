@@ -1,24 +1,25 @@
-import bluebird from "bluebird";
-import bodyParser from "body-parser";
-import compression from "compression";
-import connectHistoryApiFallback from "connect-history-api-fallback";
-import mongo from "connect-mongo";
-import cors from "cors";
-import dotenv from "dotenv";
-import express from "express";
-import session from "express-session";
-import expressValidator from "express-validator";
-import lusca from "lusca";
-import mongoose from "mongoose";
-import { MONGODB_URI, SERVER_PORT, SESSION_SECRET } from "./env-config";
-import { getPath } from "./utils";
-import logger from "./utils/logger";
+import bluebird from 'bluebird';
+import bodyParser from 'body-parser';
+import compression from 'compression';
+import connectHistoryApiFallback from 'connect-history-api-fallback';
+import mongo from 'connect-mongo';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
+import session from 'express-session';
+import expressValidator from 'express-validator';
+import lusca from 'lusca';
+import mongoose from 'mongoose';
+
+import * as dataController from './controllers/data';
+import * as excelController from './controllers/excel';
+import * as imageController from './controllers/image';
+import * as passwordController from './controllers/password';
+import { MONGODB_URI, SERVER_PORT, SESSION_SECRET } from './env-config';
+import { getPath } from './utils';
+import logger from './utils/logger';
 
 // Controllers (route handlers)
-import * as dataController from "./controllers/data";
-import * as excelController from "./controllers/excel";
-import * as imageController from "./controllers/image";
-import * as passwordController from "./controllers/password";
 
 // 加载配置文件
 dotenv.config({ path: ".env" });
@@ -68,7 +69,7 @@ app.post("/uploadImg", imageController.uploadImage);
 app.get("/getBanner", imageController.getBanner);
 
 app.post("/getData", dataController.getData);
-app.get("/getStat", dataController.getStat);
+app.post("/getStat", dataController.getStat);
 
 app.post("/updatePassWord", passwordController.updatePassword);
 app.get("/getPassword", passwordController.getPassword);

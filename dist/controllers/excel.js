@@ -11,16 +11,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const dayjs_1 = __importDefault(require("dayjs"));
 const ejsexcel_1 = __importDefault(require("ejsexcel"));
 const fs_1 = __importDefault(require("fs"));
-const moment_1 = __importDefault(require("moment"));
+const lodash_1 = __importDefault(require("lodash"));
 const multer_1 = __importDefault(require("multer"));
 const node_xlsx_1 = __importDefault(require("node-xlsx"));
 const accounts_1 = require("../models/accounts");
+const taskAccounts_1 = require("../models/taskAccounts");
 const utils_1 = require("../utils");
 const logger_1 = __importDefault(require("../utils/logger"));
 const upload = multer_1.default({ dest: "static/upload/" }).single("file"); // for parsing multipart/form-data
 exports.uploadExcel = (req, res) => __awaiter(this, void 0, void 0, function* () {
+    const excelType = req.query.uploadType;
     if (fs_1.default.readdirSync(utils_1.getPath("static/upload"))[0]) {
         const file = fs_1.default.readdirSync(utils_1.getPath("static/upload"));
         fs_1.default.unlinkSync(utils_1.getPath(`static/upload/${file[0]}`));
@@ -30,74 +33,77 @@ exports.uploadExcel = (req, res) => __awaiter(this, void 0, void 0, function* ()
             logger_1.default.info(err);
             return utils_1.responseClient(res, 200, 1, err);
         }
-        const totalNumber = yield accounts_1.Accounts.countDocuments();
-        excel2db(req.file.filename, totalNumber);
+        if (excelType === "fight") {
+            const totalNumber = yield accounts_1.Accounts.countDocuments();
+            yield excel2db(req.file.filename, totalNumber, excelType);
+        }
+        else {
+            const totalNumber = yield taskAccounts_1.TaskAccounts.countDocuments();
+            yield excel2db(req.file.filename, totalNumber, excelType);
+        }
         utils_1.responseClient(res, 200, 0, "上传成功");
     }));
 });
 exports.exportExcel = (req, res) => __awaiter(this, void 0, void 0, function* () {
-    const day = req.body.day || moment_1.default().format("YYYY-MM-DD");
-    const a = yield accounts_1.Accounts.find({
-        $or: [{ uploadTime: day }, { getTime: day }]
-    }).sort({ nickName: -1 });
-    if (a.length === 0) {
-        utils_1.responseClient(res, 200, 2, "没有该天的数据");
-        return;
-    }
-    const nameCount = [];
-    const sendAccounts = yield accounts_1.Accounts.find({ hasSend: true, getTime: day }, "nickName");
-    const allNickNames = sendAccounts.map(v => v.nickName);
-    const nickNames = [...new Set(allNickNames)];
-    nickNames.forEach(name => {
-        const count = utils_1.countName(allNickNames, name);
-        nameCount.push({ name, count });
-    });
-    const doc = [];
-    if (a !== []) {
-        for (const key in a) {
-            if (a.hasOwnProperty(key)) {
-                doc.push({
-                    accounts: a[key].data,
-                    nickName: a[key].nickName,
-                    index: Number(key) + 1
-                });
-            }
-        }
+    const day = req.body.day || dayjs_1.default().format("YYYY-MM-DD");
+    const exportType = req.body.exportType;
+    if (exportType === "fight") {
+        yield _export(accounts_1.Accounts, day, res);
     }
     else {
-        utils_1.responseClient(res, 200, 2, "没有该天的数据");
-        return;
+        yield _export(taskAccounts_1.TaskAccounts, day, res);
     }
-    const exlBuf = fs_1.default.readFileSync(utils_1.getPath("static/model.xlsx"));
-    const stat = {};
-    stat.date = day;
-    stat.accountsNumber = yield accounts_1.Accounts.countDocuments({ uploadTime: day });
-    stat.sendCount = yield accounts_1.Accounts.countDocuments({
-        hasSend: true,
-        uploadTime: day
-    });
-    stat.leaveCount = yield accounts_1.Accounts.countDocuments({
-        hasSend: false,
-        uploadTime: day
-    });
-    stat.nameCount = nameCount;
-    handleExcel(exlBuf, stat, doc, res);
 });
-function excel2db(file, totalNumber) {
-    const obj = node_xlsx_1.default.parse(utils_1.getPath(`static/upload/${file}`));
-    const fileData = obj[0].data;
-    for (let i = 1; i < fileData.length; i++) {
-        const account = new accounts_1.Accounts({
-            data: fileData[i],
-            hasSend: false,
-            nickName: undefined,
-            id: i + totalNumber,
-            uploadTime: moment_1.default().format("YYYY-MM-DD"),
-            getTime: undefined
+function _export(model, day, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const a = yield model
+            .find({
+            $or: [{ uploadTime: day }, { getTime: day }]
+        })
+            .sort({ nickName: -1 });
+        if (a.length === 0) {
+            utils_1.responseClient(res, 200, 2, "没有该天的数据");
+            return;
+        }
+        const nameCount = [];
+        const sendAccounts = yield model.find({ hasSend: true, getTime: day }, "nickName");
+        const allNickNames = sendAccounts.map(v => v.nickName);
+        const nickNames = [...new Set(allNickNames)];
+        nickNames.forEach(name => {
+            const count = utils_1.countName(allNickNames, name);
+            nameCount.push({ name, count });
         });
-        account.save();
-    }
-    logger_1.default.info(`${file} 上传成功`);
+        const doc = [];
+        if (a !== []) {
+            for (const key in a) {
+                if (a.hasOwnProperty(key)) {
+                    doc.push({
+                        accounts: a[key].data,
+                        nickName: a[key].nickName,
+                        index: Number(key) + 1
+                    });
+                }
+            }
+        }
+        else {
+            utils_1.responseClient(res, 200, 2, "没有该天的数据");
+            return;
+        }
+        const exlBuf = fs_1.default.readFileSync(utils_1.getPath("static/model.xlsx"));
+        const stat = {};
+        stat.date = day;
+        stat.accountsNumber = yield model.countDocuments({ uploadTime: day });
+        stat.sendCount = yield model.countDocuments({
+            hasSend: true,
+            uploadTime: day
+        });
+        stat.leaveCount = yield model.countDocuments({
+            hasSend: false,
+            uploadTime: day
+        });
+        stat.nameCount = nameCount;
+        handleExcel(exlBuf, stat, doc, res);
+    });
 }
 function handleExcel(exlBuf, stat, doc, res) {
     // 这个data是模板上的标题，也就是你表格上面的标题
@@ -134,6 +140,51 @@ function handleExcel(exlBuf, stat, doc, res) {
             logger_1.default.info(`导出成功 ${excelName}.xlsx`);
             res.end();
         });
+    });
+}
+function excel2db(file, totalNumber, excelType) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const obj = node_xlsx_1.default.parse(utils_1.getPath(`static/upload/${file}`));
+        const fileData = lodash_1.default.flatten(obj[0].data);
+        if (excelType === "fight") {
+            for (let i = 1; i < fileData.length; i++) {
+                try {
+                    const account = new accounts_1.Accounts({
+                        data: fileData[i],
+                        hasSend: false,
+                        nickName: undefined,
+                        id: i + totalNumber,
+                        uploadTime: dayjs_1.default().format("YYYY-MM-DD"),
+                        getTime: undefined
+                    });
+                    yield account.save();
+                }
+                catch (error) {
+                    logger_1.default.error(`${excelType} ${error}`);
+                    break;
+                }
+            }
+        }
+        else {
+            for (let i = 1; i < fileData.length; i++) {
+                try {
+                    const taskAccount = new taskAccounts_1.TaskAccounts({
+                        data: fileData[i],
+                        hasSend: false,
+                        nickName: undefined,
+                        id: i + totalNumber,
+                        uploadTime: dayjs_1.default().format("YYYY-MM-DD"),
+                        getTime: undefined
+                    });
+                    yield taskAccount.save();
+                }
+                catch (error) {
+                    logger_1.default.error(`${excelType} ${error}`);
+                    break;
+                }
+            }
+        }
+        logger_1.default.info(`${file} 上传成功`);
     });
 }
 //# sourceMappingURL=excel.js.map

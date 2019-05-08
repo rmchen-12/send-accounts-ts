@@ -22,14 +22,14 @@ const express_session_1 = __importDefault(require("express-session"));
 const express_validator_1 = __importDefault(require("express-validator"));
 const lusca_1 = __importDefault(require("lusca"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const env_config_1 = require("./env-config");
-const utils_1 = require("./utils");
-const logger_1 = __importDefault(require("./utils/logger"));
-// Controllers (route handlers)
 const dataController = __importStar(require("./controllers/data"));
 const excelController = __importStar(require("./controllers/excel"));
 const imageController = __importStar(require("./controllers/image"));
 const passwordController = __importStar(require("./controllers/password"));
+const env_config_1 = require("./env-config");
+const utils_1 = require("./utils");
+const logger_1 = __importDefault(require("./utils/logger"));
+// Controllers (route handlers)
 // 加载配置文件
 dotenv_1.default.config({ path: ".env" });
 const MongoStore = connect_mongo_1.default(express_session_1.default);
@@ -70,7 +70,7 @@ app.get("/static/image/*", imageController.handleImage);
 app.post("/uploadImg", imageController.uploadImage);
 app.get("/getBanner", imageController.getBanner);
 app.post("/getData", dataController.getData);
-app.get("/getStat", dataController.getStat);
+app.post("/getStat", dataController.getStat);
 app.post("/updatePassWord", passwordController.updatePassword);
 app.get("/getPassword", passwordController.getPassword);
 app.post("/export", excelController.exportExcel);
