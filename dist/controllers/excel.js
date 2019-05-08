@@ -34,11 +34,11 @@ exports.uploadExcel = (req, res) => __awaiter(this, void 0, void 0, function* ()
             return utils_1.responseClient(res, 200, 1, err);
         }
         if (excelType === "fight") {
-            const totalNumber = yield accounts_1.Accounts.countDocuments();
+            const totalNumber = yield taskAccounts_1.TaskAccounts.countDocuments();
             yield excel2db(req.file.filename, totalNumber, excelType);
         }
         else {
-            const totalNumber = yield taskAccounts_1.TaskAccounts.countDocuments();
+            const totalNumber = yield accounts_1.Accounts.countDocuments();
             yield excel2db(req.file.filename, totalNumber, excelType);
         }
         utils_1.responseClient(res, 200, 0, "上传成功");
@@ -48,10 +48,10 @@ exports.exportExcel = (req, res) => __awaiter(this, void 0, void 0, function* ()
     const day = req.body.day || dayjs_1.default().format("YYYY-MM-DD");
     const exportType = req.body.exportType;
     if (exportType === "fight") {
-        yield _export(accounts_1.Accounts, day, res);
+        yield _export(taskAccounts_1.TaskAccounts, day, res);
     }
     else {
-        yield _export(taskAccounts_1.TaskAccounts, day, res);
+        yield _export(accounts_1.Accounts, day, res);
     }
 });
 function _export(model, day, res) {
@@ -149,7 +149,7 @@ function excel2db(file, totalNumber, excelType) {
         if (excelType === "fight") {
             for (let i = 1; i < fileData.length; i++) {
                 try {
-                    const account = new accounts_1.Accounts({
+                    const account = new taskAccounts_1.TaskAccounts({
                         data: fileData[i],
                         hasSend: false,
                         nickName: undefined,
@@ -168,7 +168,7 @@ function excel2db(file, totalNumber, excelType) {
         else {
             for (let i = 1; i < fileData.length; i++) {
                 try {
-                    const taskAccount = new taskAccounts_1.TaskAccounts({
+                    const taskAccount = new accounts_1.Accounts({
                         data: fileData[i],
                         hasSend: false,
                         nickName: undefined,

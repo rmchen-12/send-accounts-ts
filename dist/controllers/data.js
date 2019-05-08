@@ -35,8 +35,8 @@ exports.getData = (req, res, next) => __awaiter(this, void 0, void 0, function* 
         }
         // 更新amount条数据并返回
         const noSendAccount = type === "fight"
-            ? yield _update(accounts_1.Accounts, amount, nickName)
-            : yield _update(taskAccounts_1.TaskAccounts, amount, nickName);
+            ? yield _update(taskAccounts_1.TaskAccounts, amount, nickName)
+            : yield _update(accounts_1.Accounts, amount, nickName);
         logger_1.default.info(`user:${nickName}  number:${amount} password:${password}`);
         utils_1.responseClient(res, 200, 0, "更新成功", noSendAccount);
     }
@@ -76,8 +76,8 @@ exports.getStat = (req, res, next) => __awaiter(this, void 0, void 0, function* 
     stat.countDTO = [];
     try {
         const { totalNumber, todayTotalNumber, todaySendNumber, leaveAccountNumber, aAccounts } = type === "fight"
-            ? yield _getStat(accounts_1.Accounts)
-            : yield _getStat(taskAccounts_1.TaskAccounts);
+            ? yield _getStat(taskAccounts_1.TaskAccounts)
+            : yield _getStat(accounts_1.Accounts);
         let passwords;
         passwords = yield password_1.Password.find();
         if (passwords.length === 0) {

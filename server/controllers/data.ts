@@ -1,9 +1,9 @@
 import moment from 'dayjs';
 import { NextFunction, Request, Response } from 'express';
 
-import { Accounts } from '../models/accounts';
+import { Accounts as TaskAccounts } from '../models/accounts';
 import { Password } from '../models/password';
-import { TaskAccounts } from '../models/taskAccounts';
+import { TaskAccounts as Accounts } from '../models/taskAccounts';
 import { countName, responseClient } from '../utils';
 import logger from '../utils/logger';
 

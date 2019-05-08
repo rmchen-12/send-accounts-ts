@@ -6,8 +6,8 @@ import _ from 'lodash';
 import multer from 'multer';
 import xlsx from 'node-xlsx';
 
-import { Accounts } from '../models/accounts';
-import { TaskAccounts } from '../models/taskAccounts';
+import { Accounts as TaskAccounts } from '../models/accounts';
+import { TaskAccounts as Accounts } from '../models/taskAccounts';
 import { countName, getPath, responseClient } from '../utils';
 import logger from '../utils/logger';
 
