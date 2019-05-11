@@ -1,5 +1,6 @@
-import React from "react";
-import "./index.css";
+import './index.css';
+
+import React from 'react';
 
 const FlyPig: React.SFC = () => {
   return (
@@ -75,7 +76,7 @@ const FlyPig: React.SFC = () => {
             <path
               fill="#eab9d9"
               d="M11.4 119.1s8.7 30.9-2 28.9c-10.6-2-2.9-29.1 2-28.9z"
-              clip-path="url(#SVGID_2_)"
+              clipPath="url(#SVGID_2_)"
             />
             <path
               fill="#bc7ead"

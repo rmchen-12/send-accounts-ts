@@ -11,6 +11,7 @@
     "ssh": "ssh root@47.99.146.10"
   },
   "dependencies": {
+    "@types/async-lock": "^1.1.1",
     "@types/axios": "^0.14.0",
     "@types/bluebird": "^3.5.26",
     "@types/echarts": "^4.1.8",
@@ -19,6 +20,7 @@
     "@types/react-router-dom": "^4.3.1",
     "antd": "^3.16.1",
     "antd-mobile": "^2.2.11",
+    "async-lock": "^1.2.0",
     "autoprefixer": "7.1.6",
     "axios": "^0.18.0",
     "babel-jest": "20.0.3",

@@ -11,12 +11,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const async_lock_1 = __importDefault(require("async-lock"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const accounts_1 = require("../models/accounts");
 const password_1 = require("../models/password");
 const taskAccounts_1 = require("../models/taskAccounts");
 const utils_1 = require("../utils");
 const logger_1 = __importDefault(require("../utils/logger"));
+const lock = new async_lock_1.default();
 exports.getData = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     const { nickName, amount, password, type } = req.body;
     try {
@@ -44,11 +46,20 @@ exports.getData = (req, res, next) => __awaiter(this, void 0, void 0, function* 
             return;
         }
         // 更新amount条数据并返回
-        const noSendAccount = type === "fight"
-            ? yield _update(taskAccounts_1.TaskAccounts, amount, nickName)
-            : yield _update(accounts_1.Accounts, amount, nickName);
-        logger_1.default.info(`user:${nickName}  number:${amount} password:${password}`);
-        utils_1.responseClient(res, 200, 0, "更新成功", noSendAccount);
+        lock
+            .acquire("updateAccounts", () => __awaiter(this, void 0, void 0, function* () {
+            const noSendAccount = type === "fight"
+                ? yield _update(taskAccounts_1.TaskAccounts, amount, nickName)
+                : yield _update(accounts_1.Accounts, amount, nickName);
+            logger_1.default.info(`user:${nickName}  number:${amount} password:${password}`);
+            return noSendAccount;
+        }))
+            .then(noSendAccount => {
+            utils_1.responseClient(res, 200, 0, "更新成功", noSendAccount);
+        })
+            .catch(err => {
+            logger_1.default.error(err.message);
+        });
     }
     catch (error) {
         utils_1.responseClient(res);

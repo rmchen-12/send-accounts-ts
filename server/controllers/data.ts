@@ -1,3 +1,4 @@
+import AsyncLock from 'async-lock';
 import moment from 'dayjs';
 import { NextFunction, Request, Response } from 'express';
 
@@ -7,7 +8,7 @@ import { TaskAccounts as Accounts } from '../models/taskAccounts';
 import { countName, responseClient } from '../utils';
 import logger from '../utils/logger';
 
-
+const lock = new AsyncLock();
 export const getData = async (
   req: Request,
   res: Response,
@@ -43,13 +44,22 @@ export const getData = async (
     }
 
     // 更新amount条数据并返回
-    const noSendAccount =
-      type === "fight"
-        ? await _update(Accounts, amount, nickName)
-        : await _update(TaskAccounts, amount, nickName);
+    lock
+      .acquire("updateAccounts", async () => {
+        const noSendAccount =
+          type === "fight"
+            ? await _update(Accounts, amount, nickName)
+            : await _update(TaskAccounts, amount, nickName);
 
-    logger.info(`user:${nickName}  number:${amount} password:${password}`);
-    responseClient(res, 200, 0, "更新成功", noSendAccount);
+        logger.info(`user:${nickName}  number:${amount} password:${password}`);
+        return noSendAccount;
+      })
+      .then(noSendAccount => {
+        responseClient(res, 200, 0, "更新成功", noSendAccount);
+      })
+      .catch(err => {
+        logger.error(err.message);
+      });
   } catch (error) {
     responseClient(res);
     if (error) {
