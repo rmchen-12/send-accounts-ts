@@ -8,8 +8,6 @@ import ColorBall from '../../components/ColorBall';
 import FlyPig from '../../components/FlyPig';
 import { http } from '../../http';
 
-
-
 interface Data {
   data: string;
 }
@@ -169,7 +167,7 @@ export default class Front extends React.Component<object, AdminState> {
   public onAmountChange = (value: string) => {
     const { leaveAccount } = this.state;
 
-    if (Number(value) <= (leaveAccount <= 10 ? leaveAccount : 10)) {
+    if (Number(value) <= (leaveAccount <= 50 ? leaveAccount : 50)) {
       this.setState({
         hasError: false
       });
@@ -178,7 +176,7 @@ export default class Front extends React.Component<object, AdminState> {
         hasError: true
       });
       Toast.info(
-        leaveAccount <= 10 ? `最多只能领${leaveAccount}个` : `最多只能领10个`
+        leaveAccount <= 50 ? `最多只能领${leaveAccount}个` : `最多只能领50个`
       );
     }
 
@@ -275,9 +273,9 @@ export default class Front extends React.Component<object, AdminState> {
             <InputItem
               type="digit"
               placeholder={
-                leaveAccount <= 10
+                leaveAccount <= 50
                   ? `输入领取数量，库存${leaveAccount}个`
-                  : "输入领取数量，最多领10个哦"
+                  : "输入领取数量，最多领50个哦"
               }
               error={this.state.hasError}
               onChange={this.onAmountChange}
