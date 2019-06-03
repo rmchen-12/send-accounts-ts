@@ -117,8 +117,8 @@ export class Excel extends React.Component<object, ExcelState> {
               style={{ marginTop: 20 }}
               onChange={this.handleRadioChange}
             >
-              <Radio.Button value="fight">打榜</Radio.Button>
-              <Radio.Button value="task">任务</Radio.Button>
+              <Radio.Button value="fight">备用</Radio.Button>
+              <Radio.Button value="task">微博</Radio.Button>
             </Radio.Group>
           </Col>
 

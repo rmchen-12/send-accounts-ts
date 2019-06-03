@@ -85,8 +85,8 @@ export class Stat extends PureComponent<object, StatState> {
           onChange={this.handleTypeChange}
           style={{ marginBottom: 20 }}
         >
-          <Radio.Button value="fight">打榜</Radio.Button>
-          <Radio.Button value="task">任务</Radio.Button>
+          <Radio.Button value="fight">备用</Radio.Button>
+          <Radio.Button value="task">微博</Radio.Button>
         </Radio.Group>
         <Row
           align="middle"
