@@ -8,6 +8,8 @@ import ColorBall from '../../components/ColorBall';
 import FlyPig from '../../components/FlyPig';
 import { http } from '../../http';
 
+
+
 interface Data {
   data: string;
 }
@@ -215,8 +217,8 @@ export default class Front extends React.Component<object, AdminState> {
 
   public handleTypeChange = (value: string) => {
     const map = {
-      任务群: "task",
-      投手群: "fight"
+      微博号: "task",
+      任务号: "fight"
     };
     this.setState({ type: map[value] }, () => {
       this.getStat();
