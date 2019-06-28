@@ -288,7 +288,7 @@ export default class Front extends React.Component<object, AdminState> {
 
             {hasPassword ? (
               <InputItem
-                type="password"
+                type="digit"
                 placeholder="输入口令"
                 onChange={this.onPasswordChange}
                 value={password}
