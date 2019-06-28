@@ -218,7 +218,7 @@ export default class Front extends React.Component<object, AdminState> {
   public handleTypeChange = (value: string) => {
     const map = {
       微博号: "task",
-      任务号: "fight"
+      备用号: "fight"
     };
     this.setState({ type: map[value] }, () => {
       this.getStat();

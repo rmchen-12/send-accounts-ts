@@ -73,9 +73,7 @@ function _update(model, amount, nickName) {
         // 更新amount条数据并返回
         const noSendAccount = yield model
             .find({ hasSend: false })
-            .sort({
-            id: 1
-        })
+            .sort({ id: 1 })
             .limit(amount);
         noSendAccount.forEach((doc) => __awaiter(this, void 0, void 0, function* () {
             yield model.updateOne({

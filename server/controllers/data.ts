@@ -77,9 +77,7 @@ async function _update(
   // 更新amount条数据并返回
   const noSendAccount = await model
     .find({ hasSend: false })
-    .sort({
-      id: 1
-    })
+    .sort({ id: 1 })
     .limit(amount);
 
   noSendAccount.forEach(async (doc: any) => {
