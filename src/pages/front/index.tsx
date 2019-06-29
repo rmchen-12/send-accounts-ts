@@ -8,8 +8,6 @@ import ColorBall from '../../components/ColorBall';
 import FlyPig from '../../components/FlyPig';
 import { http } from '../../http';
 
-
-
 interface Data {
   data: string;
 }
@@ -191,10 +189,10 @@ export default class Front extends React.Component<object, AdminState> {
     this.setState({ password: value });
   };
 
-  public onKeyPress = (e: React.KeyboardEvent) => {
-    e.preventDefault();
-    this.submit();
-  };
+  //   public onKeyPress = (e: React.KeyboardEvent) => {
+  //     e.preventDefault();
+  //     this.submit();
+  //   };
 
   public imgLoad = () => {
     this.setState({ isImgLoad: true });
@@ -297,7 +295,6 @@ export default class Front extends React.Component<object, AdminState> {
                 placeholder="输入口令"
                 onChange={this.onPasswordChange}
                 value={password}
-                onKeyPress={this.onKeyPress}
               >
                 口令
               </InputItem>
