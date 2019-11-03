@@ -14,8 +14,8 @@
   ],
   "deploy": {
     "production": {
-      "user": "root",
-      "host": ["47.99.146.10"],
+      "user": "ubuntu",
+      "host": ["49.233.175.175"],
       "port": "22",
       "ref": "origin/master",
       "repo": "git@github.com:rmchen-12/send-accounts-ts.git",
