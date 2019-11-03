@@ -305,7 +305,7 @@ export default class Front extends React.Component<object, AdminState> {
           <div className="list-wrapper" onTouchStart={this.handleTouchStart}>
             <div className="tip-wrapper" ref={this.tip}>
               <span style={{ fontFamily: "arial" }}>&reg;</span>
-              <span>粉色系爱農超话站</span>
+              <span>SUPER·爱農超话站</span>
             </div>
           </div>
 

@@ -53,7 +53,7 @@ class Admin extends React.Component<RouteComponentProps, AdminState> {
             onClick={this.toFront}
           >
             <span style={{ fontFamily: "arial" }}>&reg;</span>
-            <span>粉色系爱農超话站</span>
+            <span>SUPER·爱農超话站</span>
           </div>
           <Menu
             theme="dark"
