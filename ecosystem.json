@@ -14,7 +14,7 @@
   ],
   "deploy": {
     "production": {
-      "user": "ubuntu",
+      "user": "root",
       "host": ["49.233.175.175"],
       "port": "22",
       "ref": "origin/master",
