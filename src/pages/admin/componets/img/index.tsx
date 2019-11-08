@@ -2,7 +2,6 @@ import { Button, Icon, message, Spin, Upload } from 'antd';
 import React from 'react';
 import { http } from 'src/http';
 
-
 interface ImgState {
   loading: boolean;
   banner: string;
@@ -47,7 +46,7 @@ export class Img extends React.PureComponent<object, ImgState> {
           name="file"
           action={
             process.env.NODE_ENV === "production"
-              ? "http://47.99.146.10:80/uploadImg"
+              ? "http://49.233.175.175:8080/uploadImg"
               : "http://localhost:8080/uploadImg"
           }
           onChange={this.onChange}
