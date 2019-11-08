@@ -8,7 +8,7 @@
     "server": "cross-env NODE_ENV=development nodemon dist/server.js",
     "deploy": "pm2 deploy ecosystem.json production",
     "deploy-setup": "pm2 deploy ecosystem.json production setup",
-    "ssh": "ssh root@47.99.146.10"
+    "ssh": "ssh root@49.233.175.175"
   },
   "dependencies": {
     "@types/async-lock": "^1.1.1",
