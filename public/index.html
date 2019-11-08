@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+      content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"
     />
     <meta name="theme-color" content="#000000" />
     <meta
@@ -49,6 +49,14 @@
             "script>"
         );
       }
+
+      document.body.addEventListener(
+        "touchmove",
+        function(event) {
+          event.preventDefault();
+        },
+        { passive: false }
+      );
     </script>
     <style>
       #root {
