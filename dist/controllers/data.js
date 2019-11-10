@@ -146,4 +146,19 @@ function _getStat(model) {
         };
     });
 }
+// 重置数据
+exports.resetDate = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    const { type } = req.body;
+    try {
+        const model = type === "fight" ? taskAccounts_1.TaskAccounts : accounts_1.Accounts;
+        yield model.remove({});
+        utils_1.responseClient(res, 200, 0, "已清空数据");
+    }
+    catch (error) {
+        utils_1.responseClient(res);
+        if (error) {
+            return next(error);
+        }
+    }
+});
 //# sourceMappingURL=data.js.map
