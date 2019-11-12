@@ -1,5 +1,4 @@
 import * as React from "react";
-import { withRouter, RouteComponentProps } from "react-router-dom";
 
 import { Layout, Menu, Icon } from "antd";
 import { Excel } from "./componets/excel";
@@ -13,7 +12,7 @@ export interface AdminState {
   selectMenu: string;
 }
 
-class Admin extends React.Component<RouteComponentProps, AdminState> {
+class Admin extends React.Component<object, AdminState> {
   public state = {
     selectMenu: "stat"
   };
@@ -35,10 +34,6 @@ class Admin extends React.Component<RouteComponentProps, AdminState> {
     return components[selectMenu];
   };
 
-  public toFront = () => {
-    this.props.history.push("/");
-  };
-
   public render() {
     return (
       <Layout style={{ height: "100vh" }}>
@@ -50,7 +45,6 @@ class Admin extends React.Component<RouteComponentProps, AdminState> {
               margin: "20px 0 20px 24px",
               cursor: "pointer"
             }}
-            onClick={this.toFront}
           >
             <span style={{ fontFamily: "arial" }}>&reg;</span>
             <span>SUPER·爱農超话站</span>
@@ -109,4 +103,4 @@ class Admin extends React.Component<RouteComponentProps, AdminState> {
   }
 }
 
-export default withRouter(Admin);
+export default Admin;

@@ -60,7 +60,18 @@ module.exports = {
   // You can exclude the *.map files from the build during deployment.
   devtool: shouldUseSourceMap ? "source-map" : false,
   // In production, we only want to load the polyfills and the app code.
-  entry: [require.resolve("./polyfills"), paths.appIndexJs],
+  entry: {
+    app: [
+      require.resolve("./polyfills"),
+      require.resolve("react-dev-utils/webpackHotDevClient"),
+      paths.appIndexJs
+    ],
+    admin: [
+      require.resolve("./polyfills"),
+      require.resolve("react-dev-utils/webpackHotDevClient"),
+      paths.appAdminJs
+    ]
+  },
   output: {
     // The build folder.
     path: paths.appBuild,
@@ -281,22 +292,46 @@ module.exports = {
     // in `package.json`, in which case it will be the pathname of that URL.
     new InterpolateHtmlPlugin(env.raw),
     // Generates an `index.html` file with the <script> injected.
-    new HtmlWebpackPlugin({
-      inject: true,
-      template: paths.appHtml,
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeRedundantAttributes: true,
-        useShortDoctype: true,
-        removeEmptyAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        keepClosingSlash: true,
-        minifyJS: true,
-        minifyCSS: true,
-        minifyURLs: true
-      }
-    }),
+    new HtmlWebpackPlugin(
+      Object.assign({
+        template: paths.appHtml,
+        filename: "index.html",
+        chunks: ["app"],
+        inject: true,
+        minify: {
+          removeComments: true,
+          collapseWhitespace: true,
+          removeRedundantAttributes: true,
+          useShortDoctype: true,
+          removeEmptyAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+          keepClosingSlash: true,
+          minifyJS: true,
+          minifyCSS: true,
+          minifyURLs: true
+        }
+      })
+    ),
+    new HtmlWebpackPlugin(
+      Object.assign({
+        template: paths.appAdminHtml,
+        filename: "admin.html",
+        chunks: ["admin"],
+        inject: true,
+        minify: {
+          removeComments: true,
+          collapseWhitespace: true,
+          removeRedundantAttributes: true,
+          useShortDoctype: true,
+          removeEmptyAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+          keepClosingSlash: true,
+          minifyJS: true,
+          minifyCSS: true,
+          minifyURLs: true
+        }
+      })
+    ),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'production') { ... }. See `./env.js`.
     // It is absolutely essential that NODE_ENV was set to production here.

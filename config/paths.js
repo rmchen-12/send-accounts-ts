@@ -43,8 +43,6 @@ module.exports = {
   dotenv: resolveApp(".env"),
   appBuild: resolveApp("build"),
   appPublic: resolveApp("public"),
-  appHtml: resolveApp("public/index.html"),
-  appIndexJs: resolveApp("src/index.tsx"),
   appPackageJson: resolveApp("package.json"),
   appSrc: resolveApp("src"),
   yarnLockFile: resolveApp("yarn.lock"),
@@ -54,5 +52,11 @@ module.exports = {
   appTsProdConfig: resolveApp("src/tsconfig.json"),
   appTsLint: resolveApp("tslint.json"),
   publicUrl: getPublicUrl(resolveApp("package.json")),
-  servedPath: getServedPath(resolveApp("package.json"))
+  servedPath: getServedPath(resolveApp("package.json")),
+  
+  appHtml: resolveApp("public/index.html"),
+  appIndexJs: resolveApp("src/index.tsx"),
+
+  appAdminHtml: resolveApp('public/admin.html'),
+  appAdminJs: resolveApp('src/admin/index.tsx')
 };
