@@ -71,6 +71,7 @@ app.post("/uploadImg", imageController.uploadImage);
 app.get("/getBanner", imageController.getBanner);
 app.post("/getData", dataController.getData);
 app.post("/getStat", dataController.getStat);
+app.post("/resetData", dataController.resetDate);
 app.post("/updatePassWord", passwordController.updatePassword);
 app.get("/getPassword", passwordController.getPassword);
 app.post("/export", excelController.exportExcel);

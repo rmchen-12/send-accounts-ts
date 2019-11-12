@@ -8,7 +8,6 @@ import { TaskAccounts as Accounts } from '../models/taskAccounts';
 import { countName, responseClient } from '../utils';
 import logger from '../utils/logger';
 
-
 const lock = new AsyncLock();
 export const getData = async (
   req: Request,
@@ -170,3 +169,22 @@ async function _getStat(model: typeof Accounts | typeof TaskAccounts) {
     aAccounts
   };
 }
+
+// 重置数据
+export const resetDate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { type }: { type: app.ExcelType } = req.body;
+  try {
+    const model = type === "fight" ? Accounts : TaskAccounts;
+    await model.remove({});
+    responseClient(res, 200, 0, "已清空数据");
+  } catch (error) {
+    responseClient(res);
+    if (error) {
+      return next(error);
+    }
+  }
+};
