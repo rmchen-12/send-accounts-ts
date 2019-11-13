@@ -1,12 +1,12 @@
-import './App.css';
+import "./App.css";
 
-import { Button, InputItem, Modal, SegmentedControl, Toast } from 'antd-mobile';
-import copy from 'copy-to-clipboard';
-import * as React from 'react';
+import { Button, InputItem, Modal, SegmentedControl, Toast } from "antd-mobile";
+import copy from "copy-to-clipboard";
+import * as React from "react";
 
-import ColorBall from '../../components/ColorBall';
-import FlyPig from '../../components/FlyPig';
-import { http } from '../../http';
+import ColorBall from "../../components/ColorBall";
+import FlyPig from "../../components/FlyPig";
+import { http, baseURL } from "../../http";
 
 interface Data {
   data: string;
@@ -249,11 +249,7 @@ export default class Front extends React.Component<object, AdminState> {
         <div className="App" style={{ opacity: isImgLoad ? 1 : 0 }}>
           {goPig && <FlyPig />}
           <img
-            src={
-              process.env.NODE_ENV === "development"
-                ? `http://localhost:8080/${banner}`
-                : `${window.location.origin}/${banner}`
-            }
+            src={baseURL + "/" + banner}
             alt="banner"
             width="100%"
             height="auto"

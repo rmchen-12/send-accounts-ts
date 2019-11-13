@@ -1,6 +1,6 @@
-import { Button, Icon, message, Spin, Upload } from 'antd';
-import React from 'react';
-import { http } from 'src/http';
+import { Button, Icon, message, Spin, Upload } from "antd";
+import React from "react";
+import { http, baseURL } from "src/http";
 
 interface ImgState {
   loading: boolean;
@@ -44,11 +44,7 @@ export class Img extends React.PureComponent<object, ImgState> {
       <Spin spinning={loading}>
         <Upload
           name="file"
-          action={
-            process.env.NODE_ENV === "production"
-              ? "http://49.233.175.175:8080/uploadImg"
-              : "http://localhost:8080/uploadImg"
-          }
+          action={`${baseURL}/uploadImg`}
           onChange={this.onChange}
         >
           <Button>
@@ -56,11 +52,7 @@ export class Img extends React.PureComponent<object, ImgState> {
           </Button>
         </Upload>
         <img
-          src={
-            process.env.NODE_ENV === "development"
-              ? `http://localhost:8080/${banner}`
-              : `${window.location.origin}/${banner}`
-          }
+          src={`${baseURL}/${banner}`}
           alt="banner"
           width="400px"
           height="auto"
