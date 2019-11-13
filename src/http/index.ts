@@ -2,7 +2,7 @@ import Axios from 'axios';
 
 export const baseURL =
   process.env.NODE_ENV === "production"
-    ? "https://49.233.175.175:443"
+    ? "https://cln1003.club"
     : "http://localhost:8080";
 
 export const http = Axios.create({
