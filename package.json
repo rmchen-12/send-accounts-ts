@@ -6,7 +6,7 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "server": "cross-env NODE_ENV=development nodemon dist/server.js",
-    "deploy": "pm2 deploy ecosystem.json production",
+    "deploy": "git push && pm2 deploy ecosystem.json production",
     "deploy-setup": "pm2 deploy ecosystem.json production setup",
     "ssh": "ssh ubuntu@49.233.175.175"
   },
