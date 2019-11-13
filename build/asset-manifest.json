@@ -1,14 +1,14 @@
 {
-  "admin.css": "static/css/admin.052bffba.css",
-  "admin.css.map": "static/css/admin.052bffba.css.map",
-  "admin.js": "static/js/admin.d2973d4e.js",
-  "admin.js.map": "static/js/admin.d2973d4e.js.map",
+  "admin.css": "static/css/admin.1c8601f6.css",
+  "admin.css.map": "static/css/admin.1c8601f6.css.map",
+  "admin.js": "static/js/admin.d1e486b3.js",
+  "admin.js.map": "static/js/admin.d1e486b3.js.map",
   "app.css": "static/css/app.653da357.css",
   "app.css.map": "static/css/app.653da357.css.map",
-  "app.js": "static/js/app.239101aa.js",
-  "app.js.map": "static/js/app.239101aa.js.map",
-  "static/js/0.7e61d3fc.chunk.js": "static/js/0.7e61d3fc.chunk.js",
-  "static/js/0.7e61d3fc.chunk.js.map": "static/js/0.7e61d3fc.chunk.js.map",
-  "static/js/1.ba989d67.chunk.js": "static/js/1.ba989d67.chunk.js",
-  "static/js/1.ba989d67.chunk.js.map": "static/js/1.ba989d67.chunk.js.map"
+  "app.js": "static/js/app.c769f773.js",
+  "app.js.map": "static/js/app.c769f773.js.map",
+  "static/js/0.d51ccd80.chunk.js": "static/js/0.d51ccd80.chunk.js",
+  "static/js/0.d51ccd80.chunk.js.map": "static/js/0.d51ccd80.chunk.js.map",
+  "static/js/1.4e2dcf4f.chunk.js": "static/js/1.4e2dcf4f.chunk.js",
+  "static/js/1.4e2dcf4f.chunk.js.map": "static/js/1.4e2dcf4f.chunk.js.map"
 }
