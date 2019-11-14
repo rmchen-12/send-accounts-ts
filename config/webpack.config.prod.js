@@ -63,12 +63,10 @@ module.exports = {
   entry: {
     app: [
       require.resolve("./polyfills"),
-      require.resolve("react-dev-utils/webpackHotDevClient"),
       paths.appIndexJs
     ],
     admin: [
       require.resolve("./polyfills"),
-      require.resolve("react-dev-utils/webpackHotDevClient"),
       paths.appAdminJs
     ]
   },
