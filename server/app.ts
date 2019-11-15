@@ -67,6 +67,7 @@ app.use("/", express.static(getPath("static/image"), { maxAge: 31557600000 }));
 app.get("/static/image/*", imageController.handleImage);
 app.post("/uploadImg", imageController.uploadImage);
 app.get("/getBanner", imageController.getBanner);
+app.post("/getBanner", imageController.getBanner);
 
 app.post("/getData", dataController.getData);
 app.post("/getStat", dataController.getStat);

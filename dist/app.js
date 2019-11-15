@@ -69,6 +69,7 @@ app.use("/", express_1.default.static(utils_1.getPath("static/image"), { maxAge:
 app.get("/static/image/*", imageController.handleImage);
 app.post("/uploadImg", imageController.uploadImage);
 app.get("/getBanner", imageController.getBanner);
+app.post("/getBanner", imageController.getBanner);
 app.post("/getData", dataController.getData);
 app.post("/getStat", dataController.getStat);
 app.post("/resetData", dataController.resetDate);
