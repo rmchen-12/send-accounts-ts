@@ -257,7 +257,8 @@ export default class Front extends React.Component<object, AdminState> {
           />
           <div className="input-wrapper">
             <SegmentedControl
-              values={["微博号", "备用号"]}
+              values={["安卓机", "苹果机"]}
+            //   values={["微博号", "备用号"]}
               onValueChange={this.handleTypeChange}
               style={{ height: 40 }}
               selectedIndex={type === "task" ? 0 : 1}
