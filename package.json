@@ -43,7 +43,7 @@
     "echarts-for-react": "^2.0.15-beta.0",
     "ejsexcel": "^3.5.3",
     "errorhandler": "^1.5.0",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express-session": "^1.15.6",
     "express-validator": "^5.3.1",
     "extract-text-webpack-plugin": "3.0.2",
